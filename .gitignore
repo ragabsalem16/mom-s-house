@@ -9,6 +9,8 @@ nbproject/private/
 .gradle/
 build/
 android/app/build/
+release/*.aab
+release/*.apk
 
 # Local database & temp files
 db/*.backup*
