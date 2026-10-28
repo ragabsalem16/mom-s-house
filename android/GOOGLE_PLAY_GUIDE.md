@@ -28,6 +28,9 @@
 ---
 
 ## 3. خطوات إنتاج ملف الحزمة (AAB) لرفعه:
+> ✅ **تم البناء بالفعل!** الحزمة الموقّعة جاهزة في: `release/beit-mama-v1.0.0.aab` (و نسخة APK تجريبية في `release/beit-mama-v1.0.0.apk`).
+> يمكن إعادة إنتاج البناء بالأمر: `cd android && ./gradlew bundleRelease assembleRelease`
+
 1. افتح برنامج **Android Studio**.
 2. اختر **Open** ثم حدد مجلد `android` من مشروع `beit-mama`.
 3. انتظر ثوانٍ لاكتمال المزامنة (Gradle Sync).
