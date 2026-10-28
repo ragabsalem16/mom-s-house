@@ -1,0 +1,13 @@
+# Byte-compiled / optimized / URL
+*.class
+bin/
+target/
+.jdk/
+.idea/
+*.iml
+nbproject/private/
+
+# Local database & temp files
+db/*.backup*
+.DS_Store
+sources.txt
