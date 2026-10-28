@@ -560,8 +560,12 @@ public class BeitMamaWebServer {
                     return;
                 }
                 byte[] bytes = Files.readAllBytes(requested);
-                exchange.getResponseHeaders().set("Content-Type", contentType(requested));
+                String cType = contentType(requested);
+                exchange.getResponseHeaders().set("Content-Type", cType);
                 exchange.getResponseHeaders().set("X-Content-Type-Options", "nosniff");
+                if (cType.contains("vnd.android.package-archive")) {
+                    exchange.getResponseHeaders().set("Content-Disposition", "attachment; filename=\"MomHouse.apk\"");
+                }
                 exchange.sendResponseHeaders(200, bytes.length);
                 try (OutputStream output = exchange.getResponseBody()) {
                     output.write(bytes);
@@ -575,6 +579,9 @@ public class BeitMamaWebServer {
             String name = file.getFileName().toString().toLowerCase();
             if (name.endsWith(".css")) return "text/css; charset=UTF-8";
             if (name.endsWith(".js")) return "application/javascript; charset=UTF-8";
+            if (name.endsWith(".json")) return "application/json; charset=UTF-8";
+            if (name.endsWith(".webmanifest")) return "application/manifest+json; charset=UTF-8";
+            if (name.endsWith(".apk")) return "application/vnd.android.package-archive";
             if (name.endsWith(".png")) return "image/png";
             if (name.endsWith(".jpg") || name.endsWith(".jpeg")) return "image/jpeg";
             if (name.endsWith(".svg")) return "image/svg+xml";
