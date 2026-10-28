@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بيت ماما | أكل بيتي .. من إيدين أمهاتنا</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-pink: #c2185b;
+            --brand-pink-dark: #9c1048;
+            --brand-pink-light: #fce4ec;
+            --brand-green: #2e7d32;
+            --text-main: #212121;
+            --text-sub: #666666;
+            --bg-page: #fbf9f8;
+            --card-border: #f0e6e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.5; }
+
+        /* ---------- 1. Navbar ---------- */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #f2eaea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .logo-badge svg { width: 34px; height: 34px; }
+        .logo-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-pink);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 15px;
+            padding-bottom: 4px;
+            position: relative;
+            transition: 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--brand-pink);
+        }
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--brand-pink);
+            border-radius: 2px;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            color: #333;
+        }
+        .icon-btn svg { width: 22px; height: 22px; }
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            background: var(--brand-pink);
+            color: #fff;
+            font-size: 10px;
+            font-weight: 800;
+            width: 17px;
+            height: 17px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-btn {
+            background: var(--brand-pink);
+            color: #fff;
+            padding: 8px 22px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+        .login-btn:hover { background: var(--brand-pink-dark); }
+
+        /* ---------- 2. Hero Section ---------- */
+        .hero-banner {
+            position: relative;
+            background: #fff;
+            border-bottom: 1px solid #f0e6e6;
+            overflow: hidden;
+        }
+        .hero-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 40px 24px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        .hero-bg-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 58%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            mask-image: linear-gradient(to right, rgba(0,0,0,1) 60%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 60%, transparent 100%);
+            pointer-events: none;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 540px;
+        }
+        .hero-logo-box {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+        .hero-logo-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-logo-text {
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--brand-pink);
+            line-height: 1;
+        }
+        .hero-logo-sub {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--brand-green);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hero-desc {
+            font-size: 15px;
+            color: #555;
+            margin: 16px 0 24px;
+            line-height: 1.7;
+            max-width: 440px;
+        }
+
+        /* Search Bar in Hero */
+        .hero-search-box {
+            display: flex;
+            align-items: center;
+            background: #ffffff;
+            border: 1.5px solid #dedede;
+            border-radius: 999px;
+            padding: 5px 6px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            max-width: 460px;
+        }
+        .hero-search-box input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            background: transparent;
+            color: #333;
+        }
+        .hero-search-box button {
+            background: var(--brand-pink);
+            color: #fff;
+            border: none;
+            padding: 9px 24px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .hero-search-box button:hover { background: var(--brand-pink-dark); }
+
+        /* ---------- 3. Category Pills Row ---------- */
+        .categories-section {
+            background: #ffffff;
+            padding: 16px 0 20px;
+            border-bottom: 1px solid #f2eaea;
+        }
+        .cat-scroll-wrap {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            overflow-x: auto;
+        }
+        .cat-all-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--brand-pink);
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+            padding-left: 10px;
+            border-left: 1px solid #eee;
+        }
+        .cat-pill {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 96px;
+            padding: 12px 14px;
+            border-radius: 18px;
+            background: #fbfbfb;
+            border: 1px solid #eee;
+            text-decoration: none;
+            color: #444;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .cat-pill:hover, .cat-pill.active {
+            background: #fff;
+            border-color: var(--brand-pink);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(194, 24, 91, 0.12);
+            color: var(--brand-pink);
+        }
+        .cat-icon-circle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .cat-pill span {
+            font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        /* Category Color Themes matching uploaded design */
+        .cat-c1 { background: #e3f2fd; color: #1976d2; }
+        .cat-c2 { background: #f3e5f5; color: #7b1fa2; }
+        .cat-c3 { background: #e8f5e9; color: #388e3c; }
+        .cat-c4 { background: #fff3e0; color: #f57c00; }
+        .cat-c5 { background: #fce4ec; color: #c2185b; }
+        .cat-c6 { background: #e8f5e9; color: #2e7d32; }
+        .cat-c7 { background: #fff8e1; color: #fbc02d; }
+
+        /* ---------- 4. Main Catalog + Promotion Banner ---------- */
+        .main-section {
+            max-width: 1240px;
+            margin: 32px auto 50px;
+            padding: 0 24px;
+        }
+        .section-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 22px;
+            font-weight: 800;
+            color: #222;
+        }
+        .section-title .crown-icon { color: var(--brand-pink); font-size: 20px; }
+        .view-all-link {
+            color: var(--brand-pink);
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .catalog-container-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 260px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* 4-column Food Grid */
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .food-card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.25s;
+            position: relative;
+        }
+        .food-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+            border-color: #f8bbd0;
+        }
+        .card-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 145px;
+            background: #f7f7f7;
+            overflow: hidden;
+        }
+        .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .fav-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255,255,255,0.92);
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--brand-pink);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .card-body {
+            padding: 12px 14px 14px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .card-title {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #212121;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .card-cook-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 12px;
+        }
+        .card-cook-meta img {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+        }
+        .card-region {
+            display: block;
+            margin: -7px 0 10px;
+            color: #777;
+            font-size: 11.5px;
+            text-align: center;
+        }
+        .card-rating {
+            color: #f57c00;
+            font-weight: 700;
+        }
+        .card-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px dashed #f0e6e6;
+        }
+        .card-price {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--brand-pink);
+        }
+        .card-price small {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #888;
+        }
+        .add-cart-btn {
+            background: var(--brand-pink);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 6px 14px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.2s;
+        }
+        .add-cart-btn:hover { background: var(--brand-pink-dark); }
+
+        /* Support Mothers Promo Card (Right Side) */
+        .promo-side-card {
+            background: #fff8fa;
+            border: 1.5px solid #fce4ec;
+            border-radius: 20px;
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .promo-logo-icon { width: 44px; height: 44px; margin-bottom: 12px; }
+        .promo-title {
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--brand-pink);
+            margin-bottom: 4px;
+        }
+        .promo-subtitle {
+            font-size: 15px;
+            font-weight: 800;
+            color: #212121;
+            margin-bottom: 12px;
+        }
+        .promo-text {
+            font-size: 12.5px;
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .promo-btn {
+            background: var(--brand-pink);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 9px 24px;
+            font-size: 13.5px;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+        }
+        .promo-btn:hover { background: var(--brand-pink-dark); }
+        .promo-footer-tag {
+            margin-top: 22px;
+            color: var(--brand-pink);
+            font-weight: 800;
+            font-size: 13px;
+        }
+
+        /* ---------- 5. Bottom 4 Feature Badges ---------- */
+        .features-band {
+            background: #ffffff;
+            border-top: 1px solid #f0e6e6;
+            padding: 24px 0;
+            margin-top: 40px;
+        }
+        .features-grid {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .feat-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .feat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f7f9f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #388e3c;
+            flex-shrink: 0;
+        }
+        .feat-info h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #222;
+        }
+        .feat-info p {
+            font-size: 11.5px;
+            color: #777;
+        }
+
+        /* Order Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            border-radius: 18px;
+            width: 90%;
+            max-width: 440px;
+        }
+        .modal-content h3 { margin-bottom: 14px; color: var(--brand-pink); font-size: 19px; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 13px; color: #444; }
+        .form-group input { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font: inherit; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+
+        .theme-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            flex: 0 0 auto;
+            border: 1px solid #eadfe2;
+            border-radius: 50%;
+            background: #fff;
+            color: #333;
+            cursor: pointer;
+            font-size: 20px;
+            line-height: 1;
+            transition: transform .2s, background .2s;
+        }
+        .theme-toggle:hover { transform: rotate(15deg); }
+        .theme-toggle:focus-visible { outline: 3px solid #c2185b; outline-offset: 3px; }
+        :root.dark {
+            color-scheme: dark;
+            --brand-pink: #f08aab;
+            --brand-pink-dark: #d65b82;
+            --brand-pink-light: #452b35;
+            --brand-green: #8fca96;
+            --text-main: #ece9e6;
+            --text-sub: #b6b2b1;
+            --bg-page: #1c1d1b;
+            --card-border: #383936;
+        }
+        :root.dark body { background: #1c1d1b; color: #ece9e6; }
+        :root.dark header { background: #242522; border-bottom-color: #383936; }
+        :root.dark .nav-links a,
+        :root.dark .icon-btn,
+        :root.dark .section-title,
+        :root.dark .card-title,
+        :root.dark .feat-info h4 { color: #ece9e6; }
+        :root.dark .hero-banner { background: #222320; border-bottom-color: #383936; }
+        :root.dark .hero-bg-img { filter: brightness(.35); }
+        :root.dark .hero-desc,
+        :root.dark .card-cook-meta,
+        :root.dark .card-region,
+        :root.dark .feat-info p { color: #b6b2b1; }
+        :root.dark .hero-search-box,
+        :root.dark .cat-pill,
+        :root.dark .modal-content { background: #292a27; border-color: #3d3e3a; }
+        :root.dark body .food-card,
+        :root.dark body .promo-side-card {
+            background: #292a27 !important;
+            border-color: #3d3e3a !important;
+        }
+        :root.dark .hero-search-box input,
+        :root.dark .form-group input { background: #20211f; border-color: #484944; color: #ece9e6; }
+        :root.dark .categories-section,
+        :root.dark .features-band { background: #222320; border-color: #383936; }
+        :root.dark .cat-pill,
+        :root.dark .promo-title,
+        :root.dark .promo-subtitle { color: #ece9e6; }
+        :root.dark .cat-pill:hover,
+        :root.dark .cat-pill.active { background: #3a2a30; border-color: #d65b82; color: #f08aab; }
+        :root.dark .feat-icon { background: #30312d; }
+        :root.dark .promo-text,
+        :root.dark .promo-footer-tag { color: #b6b2b1; }
+        :root.dark .form-group label { color: #d3d0cd; }
+        :root.dark .modal-actions button:last-child {
+            background: #41423c !important;
+            color: #ece9e6 !important;
+        }
+        :root.dark .theme-toggle { background: #33342f; border-color: #55564f; color: #fff; }
+        :root.dark .theme-toggle:hover { background: #41423c; }
+
+        @media (max-width: 1100px) {
+            .food-grid { grid-template-columns: repeat(2, 1fr); }
+            .catalog-container-grid { grid-template-columns: 1fr; }
+            .promo-side-card { max-width: 500px; margin: 0 auto; width: 100%; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .hero-bg-img { display: none; }
+            .hero-container { padding: 24px 16px 30px; }
+            .hero-logo-text { font-size: 32px; }
+            .hero-logo-sub { font-size: 16px; }
+            .hero-desc { font-size: 13.5px; margin: 12px 0 18px; }
+            .main-section { padding: 0 16px; margin: 24px auto 40px; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+            .features-band { padding: 18px 0; }
+
+            /* على شاشات الموبايل: الكارت أفقي وبجانب الصورة (Card Side by Side) */
+            .food-grid {
+                display: grid;
+                grid-template-columns: 1fr !important;
+                gap: 14px;
+            }
+            .food-card {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: stretch;
+                border-radius: 16px;
+                overflow: hidden;
+            }
+            .card-img-wrap {
+                width: 130px !important;
+                min-width: 130px !important;
+                height: auto !important;
+                min-height: 125px;
+            }
+            .card-img-wrap img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+            }
+            .fav-btn {
+                top: 6px;
+                left: 6px;
+                width: 24px;
+                height: 24px;
+                font-size: 12px;
+            }
+            .card-body {
+                padding: 10px 12px 10px 10px !important;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                flex: 1;
+            }
+            .card-title {
+                font-size: 14.5px !important;
+                text-align: right !important;
+                margin-bottom: 2px;
+            }
+            .card-cook-meta {
+                justify-content: flex-start !important;
+                margin-bottom: 6px;
+                font-size: 11.5px;
+            }
+            .card-bottom-row {
+                padding-top: 6px;
+                margin-top: 4px;
+            }
+            .card-price {
+                font-size: 15px !important;
+            }
+            .add-cart-btn {
+                padding: 5px 12px !important;
+                font-size: 11.5px !important;
+            }
+        }
+        @media (max-width: 480px) {
+            .card-img-wrap {
+                width: 110px !important;
+                min-width: 110px !important;
+            }
+            .hero-search-box {
+                flex-direction: row;
+                padding: 3px 5px;
+            }
+            .hero-search-box input {
+                padding: 8px 10px;
+                font-size: 13px;
+            }
+            .hero-search-box button {
+                padding: 7px 16px;
+                font-size: 13px;
+            }
+            .theme-toggle { width: 38px; height: 38px; }
+        }
+    </style>
+    <script src="js/theme.js"></script>
+</head>
+<body>
+
+    <!-- 1. Header & Navigation -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <span class="logo-badge">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
+                    </svg>
+                </span>
+                <span class="logo-title">بيت ماما</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">الرئيسية</a></li>
+                    <li><a href="#foods">الطلبات</a></li>
+                    <li><a href="mother-dashboard.html">الأمهات</a></li>
+                    <li><a href="#about">عن الموقع</a></li>
+                    <li><a href="#contact">تواصل معنا</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="icon-btn" onclick="openCart()" aria-label="السلة">
+                    <span class="cart-badge" id="cartCount">0</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                </button>
+                <a href="profile.html" class="icon-btn" aria-label="الحساب">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </a>
+                <a href="login.html" class="login-btn" id="authBtn">تسجيل الدخول</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. Hero Section (مع نفس صورة السفرة والشعار والنصوص) -->
+    <section class="hero-banner">
+        <img src="images/hero_feast.jpg" alt="سفرة أكل بيتي شهية" class="hero-bg-img">
+        <div class="hero-container">
+            <div class="hero-content">
+                <div class="hero-logo-box">
+                    <div class="hero-logo-header">
+                        <svg width="48" height="48" viewBox="0 0 40 40" fill="none">
+                            <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#2e7d32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
+                        </svg>
+                        <span class="hero-logo-text">بيت ماما</span>
+                    </div>
+                    <span class="hero-logo-sub">أكل بيتي .. من إيدين أمهاتنا ♡</span>
+                </div>
+
+                <p class="hero-desc">
+                    اكتشف أشهى الأكلات المنزلية من أمهات موثوقين،<br>
+                    واحصل على طعام صحي ولذيذ من بيتك لحد بابك.
+                </p>
+
+                <div class="hero-search-box">
+                    <input type="text" id="searchInput" placeholder="ابحث عن أكلة، أو أم، أو منطقة..." oninput="renderProducts()">
+                    <button type="button" onclick="renderProducts()">بحث</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. Category Carousel Pills (نفس الأيقونات والألوان بالصورة) -->
+    <section class="categories-section">
+        <div class="cat-scroll-wrap">
+            <a href="javascript:void(0)" class="cat-all-link" onclick="filterCategory('')">
+                <span>كل الأصناف</span>
+                <span style="font-size:16px;">←</span>
+            </a>
+
+            <div class="cat-pill active" onclick="filterCategory('')">
+                <div class="cat-icon-circle cat-c4">🍲</div>
+                <span>الشوربات</span>
+            </div>
+
+            <div class="cat-pill" onclick="filterCategory('4')">
+                <div class="cat-icon-circle cat-c7">🍚</div>
+                <span>الأرز والمكرونة</span>
+            </div>
+
+            <div class="cat-pill" onclick="filterCategory('2')">
+                <div class="cat-icon-circle cat-c5">🥩</div>
+                <span>اللحوم</span>
+            </div>
+
+            <div class="cat-pill" onclick="filterCategory('3')">
+                <div class="cat-icon-circle cat-c4">🍗</div>
+                <span>الدواجن</span>
+            </div>
+
+            <div class="cat-pill" onclick="filterCategory('1')">
+                <div class="cat-icon-circle cat-c3">🥗</div>
+                <span>السلطات</span>
+            </div>
+
+            <div class="cat-pill" onclick="filterCategory('')">
+                <div class="cat-icon-circle cat-c2">🎂</div>
+                <span>الحلويات</span>
+            </div>
+
+            <div class="cat-pill" onclick="filterCategory('')">
+                <div class="cat-icon-circle cat-c1">🥤</div>
+                <span>المشروبات</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. أشهر الأكلات + كارت ادعمي الأمهات -->
+    <main class="main-section" id="foods">
+        <div class="section-header-row">
+            <h2 class="section-title">
+                <span class="crown-icon">👑</span>
+                أشهر الأكلات
+            </h2>
+            <a href="javascript:void(0)" class="view-all-link" onclick="filterCategory('')">
+                عرض الكل <span>←</span>
+            </a>
+        </div>
+
+        <div class="catalog-container-grid">
+            <!-- 4 وجبات بالضبط زي الصورة -->
+            <div class="food-grid" id="productsContainer">
+                <!-- يتم التحميل ديناميكياً من قاعدة البيانات -->
+            </div>
+
+            <!-- الكارت الجانبي الوردي: ادعمي الأمهات واستمتع بأكل بيتي -->
+            <aside class="promo-side-card">
+                <svg class="promo-logo-icon" viewBox="0 0 40 40" fill="none">
+                    <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
+                </svg>
+                <div class="promo-title">ادعمي الأمهات</div>
+                <div class="promo-subtitle">واستمتع بأكل بيتي</div>
+                <p class="promo-text">
+                    كل وجبة بتشتريها بتساعد أم مصرية<br>
+                    تزيد من دخلها وتوصل لأحلامها.
+                </p>
+                <a href="join.html" class="promo-btn">اعرف أكثر ←</a>
+                <div class="promo-footer-tag">#بيت_ماما</div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- 5. المميزات الأربعة السفلية في الصورة -->
+    <section class="features-band">
+        <div class="features-grid">
+            <div class="feat-item">
+                <div class="feat-icon">🍃</div>
+                <div class="feat-info">
+                    <h4>أكل صحي وطازج</h4>
+                    <p>من مكونات طبيعية</p>
+                </div>
+            </div>
+
+            <div class="feat-item">
+                <div class="feat-icon">♡</div>
+                <div class="feat-info">
+                    <h4>أمهات موثوقين</h4>
+                    <p>مراجعات وتقييمات حقيقية</p>
+                </div>
+            </div>
+
+            <div class="feat-item">
+                <div class="feat-icon">🚚</div>
+                <div class="feat-info">
+                    <h4>توصيل سريع</h4>
+                    <p>لحد باب بيتك</p>
+                </div>
+            </div>
+
+            <div class="feat-item">
+                <div class="feat-icon">🛡️</div>
+                <div class="feat-info">
+                    <h4>أمان في الدفع</h4>
+                    <p>دفع عند الاستلام أو إلكتروني</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Order Modal -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <h3 id="modalFoodTitle">طلب وجبة بيتي</h3>
+            <div class="form-group">
+                <label>الكمية المطلوبة:</label>
+                <input type="number" id="orderQty" min="1" value="1">
+            </div>
+            <div class="form-group">
+                <label>موعد الاستلام المقترح:</label>
+                <input type="text" id="orderTime" placeholder="مثال: اليوم الساعة 4 عصراً">
+            </div>
+            <div class="form-group">
+                <label>طريقة الدفع:</label>
+                <input type="text" value="كاش عند الاستلام (Cash on Pickup)" disabled>
+            </div>
+            <div class="modal-actions">
+                <button class="add-cart-btn" style="flex:1; justify-content:center; padding:10px;" onclick="submitOrder()">تأكيد الطلب</button>
+                <button class="add-cart-btn" style="flex:1; justify-content:center; background:#eee; color:#333;" onclick="closeOrderModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script الربط وقراءة الوجبات من السيرفر -->
+    <script>
+        let allProducts = [];
+        let selectedCategory = '';
+        let currentModalProduct = null;
+
+        async function init() {
+            checkAuth();
+            loadProducts();
+        }
+
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/me');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        const btn = document.getElementById('authBtn');
+                        btn.textContent = data.user.name;
+                        btn.href = data.user.role === 'ADMIN' ? 'admin-dashboard.html' : (data.user.role === 'MOTHER' ? 'mother-dashboard.html' : 'profile.html');
+                    }
+                }
+            } catch (e) {}
+        }
+
+        async function loadProducts() {
+            try {
+                const res = await fetch('/api/products');
+                if (!res.ok) return;
+                allProducts = await res.json();
+                renderProducts();
+            } catch (e) {}
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, character => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            })[character]);
+        }
+
+        function filterCategory(catId) {
+            selectedCategory = catId;
+            document.querySelectorAll('.cat-pill').forEach(el => el.classList.remove('active'));
+            event?.currentTarget?.classList?.add('active');
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('productsContainer');
+            const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
+            let filtered = allProducts.filter(p => {
+                const matchCat = !selectedCategory || String(p.categoryId) === String(selectedCategory);
+                const matchQuery = !query || p.name.toLowerCase().includes(query) || (p.sellerName && p.sellerName.toLowerCase().includes(query));
+                return matchCat && matchQuery;
+            });
+
+            container.innerHTML = '';
+            if (filtered.length === 0) {
+                container.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:30px; color:#888;">لا توجد أكلات مطابقة للبحث حالياً.</p>';
+                return;
+            }
+
+            filtered.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'food-card';
+
+                // fallback to cropped image
+                let imgSrc = p.imageUrl || 'images/molokhia.jpg';
+                if (p.name.includes('ملوخية')) imgSrc = 'images/molokhia.jpg';
+                else if (p.name.includes('محشي')) imgSrc = 'images/mahshi.jpg';
+                else if (p.name.includes('فراخ') || p.name.includes('بان')) imgSrc = 'images/pane.jpg';
+                else if (p.name.includes('بشاميل')) imgSrc = 'images/bechamel.jpg';
+
+                const regionMarkup = p.sellerRegion
+                    ? `<div class="card-region">📍 ${escapeHtml(p.sellerRegion)}</div>`
+                    : '';
+                card.innerHTML = `
+                    <div class="card-img-wrap">
+                        <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(p.name)}">
+                        <button class="fav-btn" title="إعجاب">♡</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-title">${escapeHtml(p.name)}</div>
+                        <div class="card-cook-meta">
+                            <span>👩‍🍳 ${escapeHtml(p.sellerName || 'أم طاهية')}</span>
+                            <span class="card-rating">★ 4.9</span>
+                        </div>
+                        ${regionMarkup}
+                        <div class="card-bottom-row">
+                            <span class="card-price">${escapeHtml(p.price)} <small>ج.م</small></span>
+                            <button class="add-cart-btn" type="button">
+                                🛒 أضف للسلة
+                            </button>
+                        </div>
+                    </div>
+                `;
+                card.querySelector('.add-cart-btn').addEventListener('click', () => openOrderModal(p));
+                container.appendChild(card);
+            });
+        }
+
+        function openOrderModal(p) {
+            currentModalProduct = p;
+            document.getElementById('modalFoodTitle').textContent = `طلب: ${p.name}`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeOrderModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        async function submitOrder() {
+            if (!currentModalProduct) return;
+            const qty = document.getElementById('orderQty').value || 1;
+            const time = document.getElementById('orderTime').value || 'خلال اليوم';
+
+            const payload = new URLSearchParams({
+                product_id: currentModalProduct.id,
+                quantity: qty,
+                pickup_time: time
+            });
+
+            try {
+                const res = await fetch('/api/orders', { method: 'POST', body: payload });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    alert('تم إرسال طلبك بنجاح للأم! يمكنك متابعته من صفحة طلباتي.');
+                    closeOrderModal();
+                } else {
+                    alert(data.message || 'يرجى تسجيل الدخول أولاً لإتمام الطلب');
+                    if (res.status === 401) window.location.href = 'login.html';
+                }
+            } catch (e) {
+                alert('حدث خطأ أثناء إرسال الطلب');
+            }
+        }
+
+        function openCart() {
+            window.location.href = 'my-orders.html';
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

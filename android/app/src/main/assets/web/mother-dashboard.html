@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>لوحة الأم | بيت ماما</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
+    <script src="js/theme.js"></script>
+    <style>
+        .page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin: 34px 0 6px;
+        }
+
+        .page-head h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .page-head .page-sub {
+            color: var(--text-muted);
+            font-size: 13.5px;
+            margin-top: 4px;
+        }
+
+        .welcome-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #f6e8d7, #efe4d0);
+            border: 1px solid rgba(150, 66, 47, .15);
+            color: #8a4a34;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 6px 18px rgba(150, 66, 47, .1);
+        }
+
+        .welcome-chip .chip-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #c05a40, #96422f);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        /* كروت الإحصائيات */
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin: 22px 0 8px;
+        }
+
+        .dash-stat {
+            padding: 18px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(110, 93, 68, .12);
+            background: linear-gradient(145deg, #fffdf8, #f8f2e8);
+            box-shadow: 0 10px 26px rgba(48, 52, 44, .07);
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s;
+        }
+
+        .dash-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 34px rgba(48, 52, 44, .12);
+        }
+
+        .dash-stat .num {
+            display: block;
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .dash-stat .lbl {
+            color: var(--text-muted);
+            font-size: 12.5px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .dash-stat svg {
+            width: 26px;
+            height: 26px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        /* بانلات */
+        .panel {
+            border: 1px solid rgba(110, 93, 68, .12);
+            border-radius: 22px;
+            padding: 26px 26px 22px;
+            margin: 22px 0;
+            background: rgba(255, 254, 250, .96);
+            box-shadow: 0 14px 36px rgba(48, 52, 44, .08);
+        }
+
+        .panel>h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            margin: 0 0 18px;
+            color: var(--secondary);
+        }
+
+        .panel>h2 .h-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(192, 90, 64, .14), rgba(150, 66, 47, .1));
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .panel>h2 .h-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .panel>h2 .count-badge {
+            min-width: 26px;
+            height: 26px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #c05a40, #96422f);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* نموذج الوجبة */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 4px 18px;
+        }
+
+        .form-grid label,
+        .panel label {
+            display: block;
+            color: #4a5949;
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .form-grid input,
+        .form-grid select,
+        .form-grid textarea,
+        .panel input,
+        .panel textarea {
+            width: 100%;
+            padding: 11px 13px;
+            margin: 5px 0 12px;
+            border: 1px solid #dedfd2 !important;
+            border-radius: 11px !important;
+            background: #fffefa;
+            font: inherit;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .check-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5949;
+            font-weight: 700;
+            font-size: 13.5px;
+            margin: 4px 0 14px;
+        }
+
+        .check-row input {
+            width: auto !important;
+            margin: 0 !important;
+            accent-color: #c05a40;
+            transform: scale(1.15);
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-main {
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 24px;
+            background: linear-gradient(135deg, #c05a40, #96422f);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(151, 69, 49, .2);
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .btn-main:hover {
+            background: linear-gradient(135deg, #a94e39, #8f402f);
+            transform: translateY(-2px);
+            box-shadow: 0 9px 20px rgba(151, 69, 49, .28);
+        }
+
+        .btn-ghost {
+            border: 1px solid #d0ab8e;
+            border-radius: 12px;
+            padding: 11px 22px;
+            background: transparent;
+            color: #984b36;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .25s;
+        }
+
+        .btn-ghost:hover {
+            background: #f6e9dc;
+        }
+
+        button:disabled {
+            opacity: .5;
+            cursor: wait;
+        }
+
+        /* كروت الوجبات */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .product {
+            position: relative;
+            border: 1px solid rgba(110, 93, 68, .12) !important;
+            border-radius: 18px !important;
+            padding: 18px 18px 16px;
+            background: #fffdf8 !important;
+            box-shadow: 0 8px 22px rgba(48, 52, 44, .06) !important;
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s, border-color .3s;
+        }
+
+        .product:hover {
+            transform: translateY(-4px);
+            border-color: rgba(184, 84, 60, .3) !important;
+            box-shadow: 0 16px 32px rgba(48, 52, 44, .12) !important;
+        }
+
+        .product h3 {
+            margin: 0 0 6px;
+            font-size: 17px;
+            color: #3a4c3d;
+        }
+
+        .product .price-line {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            margin: 6px 0 4px;
+        }
+
+        .product .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 8px 0;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 11px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .pill.ok {
+            background: #e5efe2;
+            color: #426345;
+        }
+
+        .pill.off {
+            background: #f0ece2;
+            color: #8b8574;
+        }
+
+        .pill.qty {
+            background: #f2e8d9;
+            color: #8a5a2a;
+        }
+
+        .pill.date {
+            background: #ede9f5;
+            color: #5d5480;
+        }
+
+        .product .desc {
+            color: #7d8277;
+            font-size: 13.5px;
+            margin: 8px 0 12px;
+        }
+
+        .product .actions {
+            display: flex;
+            gap: 8px;
+            border-top: 1px dashed #e8e1d4;
+            padding-top: 12px;
+        }
+
+        .product .actions button {
+            padding: 8px 18px;
+            border-radius: 10px;
+            font-size: 13.5px;
+        }
+
+        /* كروت الطلبات */
+        .order {
+            border: 1px solid rgba(93, 111, 82, .13) !important;
+            border-radius: 18px !important;
+            padding: 18px 20px;
+            margin: 14px 0;
+            background: #fffdf8 !important;
+            box-shadow: 0 8px 22px rgba(48, 52, 44, .06) !important;
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s;
+        }
+
+        .order:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 14px 30px rgba(48, 52, 44, .12);
+        }
+
+        .order-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .order-head h3 {
+            margin: 0;
+            font-size: 16.5px;
+            color: #3a4c3d;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order .details {
+            color: #55605400;
+            color: #5d685e;
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        .order .details b {
+            color: #405344;
+        }
+
+        .order .items-line {
+            background: #f5f1e6;
+            border-radius: 10px;
+            padding: 9px 13px;
+            color: #6b7065;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+
+        .order .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .order .actions button {
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 13.5px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .status-pending {
+            background: #f8edcf !important;
+            color: #74591b !important;
+        }
+
+        .status-confirmed {
+            background: #e5efe2 !important;
+            color: #426345 !important;
+        }
+
+        .status-preparing {
+            background: #e6eee9 !important;
+            color: #3f6254 !important;
+        }
+
+        .status-ready {
+            background: #e6eee9 !important;
+            color: #3f6254 !important;
+        }
+
+        .status-completed {
+            background: #e5efe2 !important;
+            color: #426345 !important;
+        }
+
+        .status-rejected,
+        .status-cancelled {
+            background: #f5e4df !important;
+            color: #8b4438 !important;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 34px 16px;
+            color: #98958a;
+        }
+
+        .empty-state .big {
+            font-size: 40px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .notice {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(120deg, #f8f0df, #f5ead2) !important;
+            border: 1px solid rgba(211, 167, 95, .35);
+            border-right: 4px solid var(--accent);
+            border-radius: 14px;
+            padding: 14px 18px;
+            margin: 18px 0;
+            color: #62563e !important;
+            font-weight: 700;
+            animation: noticePop .4s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        @keyframes noticePop {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-head h1 {
+                font-size: 24px;
+            }
+
+            .panel {
+                padding: 20px 16px;
+            }
+
+            .product-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar"><a href="index.html" class="logo" aria-label="بيت ماما - الرئيسية"><span
+                    class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg></span><span class="logo-text"><b>بيت ماما</b><small>لوحة الأم الطاهية</small></span></a>
+            <nav><a href="account.html">إعدادات الحساب</a><a href="index.html">المتجر</a><button
+                    onclick="logout()">تسجيل الخروج</button></nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="page-head">
+            <div>
+                <h1>مطبخي 🍳</h1>
+                <p class="page-sub">إدارة وجباتك ومتابعة طلبات عملائك من مكان واحد.</p>
+            </div>
+            <span class="welcome-chip" id="welcomeChip" hidden><span class="chip-avatar" id="chipAvatar">م</span><span
+                    id="chipName">أهلاً بك</span></span>
+        </div>
+        <div id="notice" class="notice" hidden>🔔</div>
+
+        <!-- الإحصائيات -->
+        <section class="dash-stats" id="dashStats">
+            <div class="dash-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <span class="num" id="statProducts">0</span><span class="lbl">وجبة في مطبخي</span>
+            </div>
+            <div class="dash-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <path d="M3 6h18" />
+                    <path d="M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                <span class="num" id="statStock">0</span><span class="lbl">حصة متاحة اليوم</span>
+            </div>
+            <div class="dash-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                    <path d="M3 6h18" />
+                </svg>
+                <span class="num" id="statOrders">0</span><span class="lbl">إجمالي الطلبات</span>
+            </div>
+            <div class="dash-stat">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                </svg>
+                <span class="num" id="statPending">0</span><span class="lbl">طلب بانتظار ردك</span>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                        <circle cx="12" cy="20" r="1" />
+                    </svg></span><span id="formTitle">إضافة وجبة</span></h2>
+            <form id="productForm" onsubmit="saveProduct(event)">
+                <input type="hidden" id="productId">
+                <div class="form-grid">
+                    <label>اسم الوجبة<input id="name" required maxlength="150"></label>
+                    <label>التصنيف<select id="category">
+                            <option value="1">محاشي ومحمر</option>
+                            <option value="2">طواجن ومكرونات</option>
+                            <option value="3">مخبوزات وفطائر</option>
+                            <option value="4">حلويات شرقية</option>
+                        </select></label>
+                    <label>السعر بالجنيه<input id="price" type="number" min="0.01" step="0.01" required></label>
+                    <label>الكمية المتاحة<input id="quantity" type="number" min="0" step="1" required></label>
+                    <label>متاحة حتى (اختياري)<input id="availableUntil" type="date"></label>
+                    <label>رابط صورة (اختياري)<input id="imageUrl" type="url" maxlength="250"></label>
+                </div>
+                <label>الوصف<textarea id="description" rows="2" maxlength="1000"></textarea></label>
+                <label class="check-row"><input id="available" type="checkbox" checked> عرضها للطلب</label>
+                <div class="panel-actions"><button class="btn-main" type="submit">حفظ الوجبة</button><button
+                        class="btn-ghost" type="button" onclick="resetForm()">إلغاء التعديل</button></div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg></span>وجباتي</h2>
+            <div id="products" class="product-list">جاري التحميل...</div>
+        </section>
+
+        <section class="panel">
+            <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
+                        <path d="M3 6h18" />
+                        <path d="M16 10a4 4 0 0 1-8 0" />
+                    </svg></span>الطلبات الجديدة ومتابعتها <span class="count-badge" id="pendingCount" hidden>0</span>
+            </h2>
+            <div id="orders">جاري التحميل...</div>
+        </section>
+    </main>
+    <script>
+        const statusLabels = { pending: 'جديد', confirmed: 'تم القبول', preparing: 'قيد التجهيز', ready: 'جاهز', completed: 'مكتمل', rejected: 'مرفوض', cancelled: 'ملغي' };
+        let previousPending = -1;
+        async function requireRole() {
+            const r = await fetch('/api/me'); if (!r.ok) { location.href = 'login.html'; return false } const d = await r.json(); if (d.user.role !== 'MOTHER') { location.href = d.user.role === 'ADMIN' ? 'admin-dashboard.html' : 'index.html'; return false }
+            const chip = document.getElementById('welcomeChip'); chip.hidden = false; document.getElementById('chipName').textContent = 'أهلاً ' + d.user.name + ' 👋'; document.getElementById('chipAvatar').textContent = (d.user.name || 'م').trim().charAt(0); return true
+        }
+        async function loadProducts() { const r = await fetch('/api/products'); if (!r.ok) throw Error('تعذر تحميل الوجبات'); const list = await r.json(); const box = document.getElementById('products'); box.replaceChildren(); document.getElementById('statProducts').textContent = list.length; document.getElementById('statStock').textContent = list.reduce((s, p) => s + p.quantity, 0); if (!list.length) { box.innerHTML = '<div class="empty-state"><span class="big">🍽️</span>لم تضيفي وجبات بعد — ابدئي من النموذج بالأعلى.</div>'; return } list.forEach(p => { const card = document.createElement('article'); card.className = 'product'; const heading = document.createElement('h3'); heading.textContent = p.name; const price = document.createElement('p'); price.className = 'price-line'; price.textContent = p.price + ' ج.م'; const meta = document.createElement('div'); meta.className = 'meta'; const avail = document.createElement('span'); avail.className = 'pill ' + (p.available ? 'ok' : 'off'); avail.textContent = p.available ? 'معروضة' : 'مخفية'; const qty = document.createElement('span'); qty.className = 'pill qty'; qty.textContent = 'الكمية ' + p.quantity; meta.append(avail, qty); if (p.availableUntil) { const d = document.createElement('span'); d.className = 'pill date'; d.textContent = 'حتى ' + p.availableUntil; meta.append(d) } const desc = document.createElement('p'); desc.className = 'desc'; desc.textContent = p.description || ''; const actions = document.createElement('div'); actions.className = 'actions'; const edit = document.createElement('button'); edit.className = 'btn-main'; edit.textContent = 'تعديل'; edit.onclick = () => editProduct(p); const del = document.createElement('button'); del.className = 'btn-ghost'; del.textContent = 'حذف'; del.onclick = () => deleteProduct(p.id); actions.append(edit, del); card.append(heading, price, meta, desc, actions); box.append(card) }) }
+        function editProduct(p) { document.getElementById('productId').value = p.id; document.getElementById('name').value = p.name; document.getElementById('category').value = p.categoryId; document.getElementById('price').value = p.price; document.getElementById('quantity').value = p.quantity; document.getElementById('availableUntil').value = p.availableUntil || ''; document.getElementById('imageUrl').value = p.imageUrl || ''; document.getElementById('description').value = p.description || ''; document.getElementById('available').checked = p.available; document.getElementById('formTitle').textContent = 'تعديل وجبة'; window.scrollTo({ top: 0, behavior: 'smooth' }) }
+        function resetForm() { document.getElementById('productForm').reset(); document.getElementById('productId').value = ''; document.getElementById('available').checked = true; document.getElementById('formTitle').textContent = 'إضافة وجبة' }
+        async function saveProduct(e) { e.preventDefault(); const id = document.getElementById('productId').value; const payload = new URLSearchParams({ id, category_id: document.getElementById('category').value, name: document.getElementById('name').value.trim(), price: document.getElementById('price').value, quantity: document.getElementById('quantity').value, available_until: document.getElementById('availableUntil').value, image_url: document.getElementById('imageUrl').value.trim(), description: document.getElementById('description').value.trim(), available: String(document.getElementById('available').checked) }); const response = await fetch('/api/products', { method: id ? 'PUT' : 'POST', body: payload }); const result = await response.json(); if (!response.ok || !result.success) { alert(result.message || 'تعذر حفظ الوجبة'); return } resetForm(); await loadProducts() }
+        async function deleteProduct(id) { if (!confirm('ستُخفى الوجبة عن المتجر مع الحفاظ على سجل الطلبات. متابعة؟')) return; const r = await fetch('/api/products', { method: 'DELETE', body: new URLSearchParams({ id }) }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر إخفاء الوجبة'); return } loadProducts() }
+        function nextAction(status) { return { pending: ['confirmed', 'قبول'], confirmed: ['preparing', 'بدء التجهيز'], preparing: ['ready', 'إعلان الجاهزية'], ready: ['completed', 'إتمام الطلب'] }[status] }
+        async function loadOrders() { const response = await fetch('/api/orders'); if (!response.ok) throw Error('تعذر تحميل الطلبات'); const list = await response.json(); const pending = list.filter(o => o.status === 'pending').length; document.getElementById('statOrders').textContent = list.length; const badge = document.getElementById('pendingCount'); document.getElementById('statPending').textContent = pending; if (pending) { badge.hidden = false; badge.textContent = pending } else badge.hidden = true; if (previousPending >= 0 && pending > previousPending) { const notice = document.getElementById('notice'); notice.hidden = false; notice.textContent = `لديك ${pending - previousPending} طلب جديد — راجعيه تحت 👇` } previousPending = pending; const box = document.getElementById('orders'); box.replaceChildren(); if (!list.length) { box.innerHTML = '<div class="empty-state"><span class="big">🧺</span>لا توجد طلبات حتى الآن — هنشتغل لما يوصلك أول طلب!</div>'; return } list.forEach(o => { const card = document.createElement('article'); card.className = 'order'; const head = document.createElement('div'); head.className = 'order-head'; const title = document.createElement('h3'); title.textContent = 'طلب #' + o.id; const badge = document.createElement('span'); badge.className = 'status-badge status-' + o.status; badge.textContent = statusLabels[o.status] || o.status; head.append(title, badge); const details = document.createElement('p'); details.className = 'details'; details.textContent = `العميل: ${o.customerName} (${o.customerPhone}) — ${o.total} ج.م — الموعد: ${o.pickupTime}`; const contact = document.createElement('p'); contact.className = 'details'; contact.textContent = `التواصل عبر: ${o.contactMethod === 'whatsapp' ? 'واتساب' : 'مكالمة هاتفية'} — الدفع: ${o.paymentMethod === 'cash_on_delivery' ? 'نقداً عند التوصيل' : 'نقداً عند الاستلام'}`; const method = document.createElement('p'); method.className = 'details'; method.textContent = o.deliveryMethod === 'delivery' ? `توصيل إلى: ${o.deliveryAddress || 'غير محدد'} (الاتفاق على الرسوم مباشرة)` : `استلام من المطبخ: ${o.sellerAddress || 'العنوان غير محدد'}`; const items = document.createElement('p'); items.className = 'items-line'; items.textContent = (o.items || []).map(i => `${i.name} × ${i.quantity}`).join('، '); card.append(head, details, contact, method, items); const next = nextAction(o.status); if (next) { const action = document.createElement('button'); action.className = 'btn-main'; action.textContent = next[1]; action.onclick = () => updateStatus(o.id, next[0]); card.append(action) } if (o.status === 'pending') { const reject = document.createElement('button'); reject.className = 'btn-ghost'; reject.textContent = 'رفض الطلب'; reject.onclick = () => updateStatus(o.id, 'rejected'); card.append(reject) } box.append(card) }) }
+        async function updateStatus(id, status) { const r = await fetch('/api/orders/status', { method: 'POST', body: new URLSearchParams({ order_id: id, status }) }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر تحديث الطلب'); return } await loadOrders() }
+        async function logout() { await fetch('/api/logout', { method: 'POST' }); localStorage.removeItem('user'); location.href = 'index.html' }
+        async function refresh() { try { await Promise.all([loadProducts(), loadOrders()]) } catch (e) { const n = document.getElementById('notice'); n.hidden = false; n.textContent = e.message } }
+        (async () => { if (await requireRole()) { await refresh(); setInterval(loadOrders, 15000) } })();
+    </script>
+</body>
+
+</html>

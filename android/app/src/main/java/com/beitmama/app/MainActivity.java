@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setLoadWithOverviewMode(true);
 
         webView.setWebViewClient(new WebViewClient());
-        // Load Beit Mama Web Server or bundled assets
-        webView.loadUrl("http://10.0.2.2:8080/");
+        // دعم التصفح دون اتصال أو الربط مع السيرفر
+        webView.getSettings().setAllowFileAccess(true);
+        webView.loadUrl("file:///android_asset/web/index.html");
     }
 
     @Override
