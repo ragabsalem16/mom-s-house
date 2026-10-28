@@ -1,0 +1,23 @@
+{
+  "name": "Beit Mama - Java 17",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installMaven": true
+    }
+  },
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Beit Mama Web Server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "mvn -q compile -Dmaven.compiler.release=17 || true",
+  "customizations": {
+    "vscode": {
+      "extensions": ["vscjava.vscode-java-pack"]
+    }
+  }
+}
