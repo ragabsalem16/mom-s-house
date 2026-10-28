@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / URL
+*.class
+bin/
+target/
+.jdk/
+.idea/
+*.iml
+nbproject/private/
+.gradle/
+build/
+android/app/build/
+
+# Local database & temp files
+db/*.backup*
+db/beit_mama.db
+.DS_Store
+sources.txt
+
+# Local Android signing credentials and keystores
+android/keystore.properties
+android/*.jks

@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>لوحة الإدارة | بيت ماما</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
+    <script src="js/theme.js"></script>
+    <style>
+        .page-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin: 34px 0 6px;
+        }
+
+        .page-head h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--secondary);
+        }
+
+        .page-head .page-sub {
+            color: var(--text-muted);
+            font-size: 13.5px;
+            margin-top: 4px;
+        }
+
+        .admin-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #2e4034, #40584a);
+            color: #e8efe6;
+            font-weight: 700;
+            font-size: 13.5px;
+            box-shadow: 0 8px 22px rgba(46, 64, 52, .3);
+        }
+
+        .admin-chip .chip-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #d97a5c, #b8543c);
+            color: #fff;
+            font-weight: 800;
+        }
+
+        /* الإحصائيات */
+        .dash-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin: 22px 0 8px;
+        }
+
+        .dash-stat {
+            padding: 18px 20px;
+            border-radius: 18px;
+            border: 1px solid rgba(110, 93, 68, .12);
+            background: linear-gradient(145deg, #fffdf8, #f8f2e8);
+            box-shadow: 0 10px 26px rgba(48, 52, 44, .07);
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s;
+        }
+
+        .dash-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 34px rgba(48, 52, 44, .12);
+        }
+
+        .dash-stat .num {
+            display: block;
+            font-size: 30px;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .dash-stat .lbl {
+            color: var(--text-muted);
+            font-size: 12.5px;
+            font-weight: 600;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .dash-stat svg {
+            width: 26px;
+            height: 26px;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .panel {
+            border: 1px solid rgba(110, 93, 68, .12);
+            border-radius: 22px;
+            padding: 26px 26px 22px;
+            margin: 22px 0;
+            background: rgba(255, 254, 250, .96);
+            box-shadow: 0 14px 36px rgba(48, 52, 44, .08);
+        }
+
+        .panel>h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 20px;
+            margin: 0 0 18px;
+            color: var(--secondary);
+        }
+
+        .panel>h2 .h-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(192, 90, 64, .14), rgba(150, 66, 47, .1));
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .panel>h2 .h-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .panel>h2 .count-badge {
+            min-width: 26px;
+            height: 26px;
+            padding: 0 8px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #c05a40, #96422f);
+            color: #fff;
+            font-size: 13px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* البحث بالهاتف */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .order-search {
+            margin-bottom: 14px;
+        }
+
+        .search-bar .search-input {
+            flex: 1;
+            min-width: 220px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #dedfd2;
+            border-radius: 12px;
+            background: #fffefa;
+            padding: 0 14px;
+        }
+
+        .search-bar .search-input svg {
+            width: 20px;
+            height: 20px;
+            color: #a8a49a;
+            flex-shrink: 0;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: 0 !important;
+            outline: none;
+            background: transparent !important;
+            padding: 12px 0;
+            font: inherit;
+            color: var(--text-dark);
+        }
+
+        .search-bar .btn-main {
+            flex-shrink: 0;
+        }
+
+        .search-results {
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .user-result {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(110, 93, 68, .12);
+            border-radius: 14px;
+            padding: 13px 16px;
+            background: #fffdf8;
+            animation: resultIn .3s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        @keyframes resultIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .user-result .u-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 17px;
+        }
+
+        .u-avatar.customer {
+            background: linear-gradient(135deg, #e5eee0, #d5e2cf);
+            color: #426345;
+        }
+
+        .u-avatar.mother {
+            background: linear-gradient(135deg, #f6e4d8, #efd2c0);
+            color: #96422f;
+        }
+
+        .u-avatar.admin {
+            background: linear-gradient(135deg, #e2e2f2, #d0d0e8);
+            color: #4a4a80;
+        }
+
+        .user-result .u-info {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .user-result .u-info b {
+            display: block;
+            color: #3a4c3d;
+            font-size: 15px;
+        }
+
+        .user-result .u-info small {
+            color: #98958a;
+            font-size: 12px;
+        }
+
+        .role-pill {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 800;
+        }
+
+        .role-customer {
+            background: #e5efe2;
+            color: #426345;
+        }
+
+        .role-mother {
+            background: #f6e4d8;
+            color: #96422f;
+        }
+
+        .role-admin {
+            background: #e6e6f5;
+            color: #4a4a80;
+        }
+
+        .status-pill {
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .st-active {
+            background: #e5efe2;
+            color: #426345;
+        }
+
+        .st-pending {
+            background: #f8edcf;
+            color: #74591b;
+        }
+
+        .st-suspended {
+            background: #f5e4df;
+            color: #8b4438;
+        }
+
+        /* نموذج الدعوة */
+        .invite-form {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .invite-form label {
+            display: block;
+            color: #4a5949;
+            font-weight: 700;
+            font-size: 13.5px;
+        }
+
+        .invite-form input {
+            width: 100%;
+            padding: 11px 13px;
+            margin-top: 5px;
+            border: 1px solid #dedfd2 !important;
+            border-radius: 11px !important;
+            background: #fffefa;
+            font: inherit;
+        }
+
+        .invite-result {
+            margin-top: 14px;
+            border: 1px dashed rgba(184, 84, 60, .4);
+            background: #fdf6ee;
+            border-radius: 12px;
+            padding: 13px 16px;
+        }
+
+        .invite-result code {
+            background: #f2e8d9;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #8a4a2a;
+        }
+
+        .invite-result a {
+            color: #96422f;
+            font-weight: 700;
+        }
+
+        .btn-main {
+            border: 0;
+            border-radius: 12px;
+            padding: 11px 24px;
+            background: linear-gradient(135deg, #c05a40, #96422f);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 16px rgba(151, 69, 49, .2);
+            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+        }
+
+        .btn-main:hover {
+            background: linear-gradient(135deg, #a94e39, #8f402f);
+            transform: translateY(-2px);
+        }
+
+        .btn-green {
+            border: 0;
+            border-radius: 10px;
+            padding: 9px 18px;
+            background: linear-gradient(135deg, #4a7a52, #3a6142);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .25s;
+        }
+
+        .btn-green:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-red {
+            border: 0;
+            border-radius: 10px;
+            padding: 9px 18px;
+            background: linear-gradient(135deg, #b8543c, #96422f);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .25s;
+        }
+
+        .btn-red:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-ghost {
+            border: 1px solid #d0ab8e;
+            border-radius: 10px;
+            padding: 9px 18px;
+            background: transparent;
+            color: #984b36;
+            font: inherit;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .25s;
+        }
+
+        .btn-ghost:hover {
+            background: #f6e9dc;
+        }
+
+        /* صفوف القوائم */
+        .row-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            border: 1px solid rgba(110, 93, 68, .12);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin: 10px 0;
+            background: #fffdf8;
+            box-shadow: 0 6px 16px rgba(48, 52, 44, .05);
+            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s;
+        }
+
+        .row-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(48, 52, 44, .1);
+        }
+
+        .row-card .r-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .row-card .r-info b {
+            color: #3a4c3d;
+        }
+
+        .row-card .r-info small {
+            color: #98958a;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .row-card .r-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* طلبات */
+        .order-card {
+            border: 1px solid rgba(93, 111, 82, .13) !important;
+            border-radius: 16px !important;
+            padding: 16px 18px;
+            margin: 12px 0;
+            background: #fffdf8 !important;
+            box-shadow: 0 8px 22px rgba(48, 52, 44, .06) !important;
+        }
+
+        .order-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .order-head h3 {
+            margin: 0;
+            font-size: 15.5px;
+            color: #3a4c3d;
+        }
+
+        .status-badge {
+            padding: 5px 13px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .status-pending {
+            background: #f8edcf !important;
+            color: #74591b !important;
+        }
+
+        .status-confirmed {
+            background: #e5efe2 !important;
+            color: #426345 !important;
+        }
+
+        .status-preparing {
+            background: #e6eee9 !important;
+            color: #3f6254 !important;
+        }
+
+        .status-ready {
+            background: #e6eee9 !important;
+            color: #3f6254 !important;
+        }
+
+        .status-completed {
+            background: #e5efe2 !important;
+            color: #426345 !important;
+        }
+
+        .status-rejected,
+        .status-cancelled {
+            background: #f5e4df !important;
+            color: #8b4438 !important;
+        }
+
+        .order-meta {
+            color: #5d685e;
+            font-size: 13.5px;
+        }
+
+        .order-meta b {
+            color: #405344;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 16px;
+            color: #98958a;
+        }
+
+        .empty-state .big {
+            font-size: 36px;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        @media (max-width: 720px) {
+            .page-head h1 {
+                font-size: 24px;
+            }
+
+            .panel {
+                padding: 20px 16px;
+            }
+
+            .invite-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="navbar"><a href="index.html" class="logo" aria-label="بيت ماما - الرئيسية"><span
+                    class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg></span><span class="logo-text"><b>بيت ماما</b><small>لوحة الإدارة</small></span></a>
+            <nav><a href="account.html">إعدادات الحساب</a><a href="index.html">المتجر</a><button
+                    onclick="logout()">خروج</button></nav>
+        </div>
+    </header>
+    <main class="container">
+        <div class="page-head">
+            <div>
+                <h1>لوحة الإدارة والإحصائيات</h1>
+                <p class="page-sub">متابعة كاملة للمتجر: المستخدمين، الطلبات، والدعوات.</p>
+            </div>
+            <span class="admin-chip" id="adminChip" hidden><span class="chip-avatar" id="chipAvatar">م</span><span
+                    id="chipName">مدير النظام</span></span>
+        </div>
+
+        <section class="dash-stats" id="stats">
+            <div class="empty-state" style="grid-column:1/-1">جاري تحميل الإحصائيات...</div>
+        </section>
+
+        <section class="panel" aria-labelledby="usersHeading">
+            <h2 id="usersHeading"><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>العملاء والمستخدمون</h2>
+            <form class="search-bar" onsubmit="searchByPhone(event)">
+                <div class="search-input">
+                    <input id="searchPhone" type="search" inputmode="tel" aria-label="رقم الهاتف"
+                        placeholder="ابحث برقم الهاتف أو جزء منه — مثال: 0109" autocomplete="off">
+                </div>
+                <select id="searchRole" aria-label="نوع الحساب">
+                    <option value="CUSTOMER">العملاء</option>
+                    <option value="ALL">كل المستخدمين</option>
+                </select>
+                <button class="btn-main" type="submit">بحث</button>
+            </form>
+            <div class="search-results" id="searchResults" aria-live="polite"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="invitationsHeading">
+            <h2 id="invitationsHeading"><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7M7.5 8a2.5 2.5 0 0 1 0-5C11 3 12 8 12 8s1-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg></span>دعوة أم جديدة</h2>
+            <form id="inviteForm" class="invite-form" onsubmit="createInvitation(event)">
+                <label>البريد الإلكتروني أو الهاتف <input id="inviteTarget" required></label>
+                <label>صلاحية الدعوة بالأيام <input id="inviteDays" type="number" min="1" max="90" value="7" required></label>
+                <button class="btn-main" type="submit">إنشاء الدعوة</button>
+            </form>
+            <div id="inviteResult"></div>
+            <div id="invitations">جاري تحميل الدعوات...</div>
+        </section>
+
+        <section class="panel" aria-labelledby="mothersHeading">
+            <h2 id="mothersHeading"><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg></span>الأمهات <span class="count-badge" id="mothersCount" hidden>0</span></h2>
+            <div id="mothers">جاري التحميل...</div>
+        </section>
+
+        <section class="panel" aria-labelledby="ordersHeading">
+            <h2 id="ordersHeading"><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18M16 10a4 4 0 0 1-8 0"/></svg></span>متابعة الطلبات <span class="count-badge" id="ordersCount" hidden>0</span></h2>
+            <div class="search-bar order-search">
+                <div class="search-input">
+                    <input id="orderPhoneSearch" type="search" inputmode="tel" aria-label="البحث في الطلبات برقم هاتف العميل"
+                        placeholder="ابحث في الطلبات برقم هاتف العميل أو جزء منه" autocomplete="off">
+                </div>
+            </div>
+            <div id="orders">جاري التحميل...</div>
+        </section>
+    </main>
+    <script>
+        const labels = { pending: 'قيد الانتظار', confirmed: 'مقبول', preparing: 'قيد التجهيز', ready: 'جاهز', completed: 'مكتمل', rejected: 'مرفوض', cancelled: 'ملغي' };
+        const roleNames = { CUSTOMER: 'عميل', MOTHER: 'أم طاهية', ADMIN: 'مدير' };
+        const statusNames = { ACTIVE: 'نشط', PENDING: 'بانتظار المراجعة', SUSPENDED: 'موقوف' };
+        let allOrders = [];
+        function normalizePhone(value) {
+            return String(value || '')
+                .replace(/[٠-٩]/g, digit => String(digit.charCodeAt(0) - 1632))
+                .replace(/[۰-۹]/g, digit => String(digit.charCodeAt(0) - 1776))
+                .replace(/\D/g, '');
+        }
+        async function initialize() {
+            const auth = await fetch('/api/me'); if (!auth.ok) { location.href = 'login.html'; return } const me = await auth.json(); if (me.user.role !== 'ADMIN') { location.href = me.user.role === 'MOTHER' ? 'mother-dashboard.html' : 'index.html'; return }
+            const chip = document.getElementById('adminChip'); chip.hidden = false; document.getElementById('chipName').textContent = me.user.name; document.getElementById('chipAvatar').textContent = (me.user.name || 'م').trim().charAt(0);
+            await Promise.all([loadStats(), loadOrders(), loadInvitations(), loadMothers()]); setInterval(loadOrders, 20000)
+        }
+        async function loadStats() {
+            const r = await fetch('/api/admin/stats'); if (!r.ok) throw Error('تعذر تحميل الإحصائيات'); const s = await r.json(); const stats = document.getElementById('stats'); stats.replaceChildren();
+            const items = [['العملاء', s.customers, '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>'], ['الأمهات', s.mothers, '<path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'], ['الطلبات', s.orders, '<path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/>'], ['تنتظر الرد', s.pending, '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>'], ['المبيعات المكتملة', s.revenue + ' ج.م', '<path d="M7 10v12"/><path d="M15 5.88 14 10"/><path d="M16 10h5a2 2 0 0 1 1.56 3.26l-4.13 5.13a2 256.74H9a2 2 0 0 1-2-2V10a2 2 0 0 1 .44-1.25L13 2"/>']];
+            items.forEach(([label, value, icon]) => { const card = document.createElement('div'); card.className = 'dash-stat'; card.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${icon}</svg><span class="num">${value}</span><span class="lbl">${label}</span>`; stats.append(card) })
+        }
+        // ===== البحث بالهاتف =====
+        async function searchByPhone(e) {
+            e.preventDefault();
+            const q = normalizePhone(document.getElementById('searchPhone').value);
+            const box = document.getElementById('searchResults');
+            box.replaceChildren();
+            if (!q) {
+                box.textContent = 'اكتب رقم الهاتف أولاً.';
+                return;
+            }
+            try {
+                const r = await fetch('/api/admin/users/search?q=' + encodeURIComponent(q));
+                const result = await r.json();
+                if (!r.ok) {
+                    box.textContent = result.message || 'تعذر البحث';
+                    return;
+                }
+                const selectedRole = document.getElementById('searchRole').value;
+                const list = result.filter(user => selectedRole === 'ALL' || user.role === selectedRole);
+                if (!list.length) {
+                    box.textContent = selectedRole === 'CUSTOMER'
+                        ? 'لا يوجد عميل بهذا الرقم.'
+                        : 'لا يوجد مستخدم بهذا الرقم.';
+                    return;
+                }
+            list.forEach(u => {
+                const row = document.createElement('div'); row.className = 'user-result';
+                const avatar = document.createElement('span'); avatar.className = 'u-avatar ' + (u.role === 'MOTHER' ? 'mother' : u.role === 'ADMIN' ? 'admin' : 'customer'); avatar.textContent = (u.name || '؟').trim().charAt(0);
+                const info = document.createElement('div'); info.className = 'u-info';
+                const name = document.createElement('b'); name.textContent = u.name || 'بدون اسم';
+                const details = document.createElement('small'); details.textContent = `${u.phone || 'بدون هاتف'} — ${u.email || 'بدون بريد'}`;
+                info.append(name, details);
+                const role = document.createElement('span'); role.className = 'role-pill role-' + u.role.toLowerCase(); role.textContent = roleNames[u.role] || u.role;
+                const st = document.createElement('span'); st.className = 'status-pill st-' + u.status.toLowerCase(); st.textContent = statusNames[u.status] || u.status;
+                row.append(avatar, info, role, st); box.append(row)
+            })
+            } catch {
+                box.textContent = 'تعذر الاتصال بالخادم أثناء البحث.';
+            }
+        }
+        const transitions = { pending: ['confirmed', 'rejected'], confirmed: ['preparing', 'cancelled'], preparing: ['ready'], ready: ['completed'] };
+        async function loadOrders() {
+            const r = await fetch('/api/orders'); if (!r.ok) throw Error('تعذر تحميل الطلبات'); allOrders = await r.json(); const badge = document.getElementById('ordersCount'); if (allOrders.length) { badge.hidden = false; badge.textContent = allOrders.length } else badge.hidden = true;
+            renderOrders();
+        }
+        function renderOrders() {
+            const box = document.getElementById('orders'); box.replaceChildren();
+            const query = normalizePhone(document.getElementById('orderPhoneSearch').value);
+            const orders = query ? allOrders.filter(order => normalizePhone(order.customerPhone).includes(query)) : allOrders;
+            if (!orders.length) {
+                box.innerHTML = query
+                    ? '<div class="empty-state"><span class="big">🔍</span>لا توجد طلبات مرتبطة بهذا الرقم</div>'
+                    : '<div class="empty-state"><span class="big">🧺</span>لا توجد طلبات بعد.</div>';
+                return;
+            }
+            orders.forEach(o => {
+                const card = document.createElement('div'); card.className = 'order-card'; const head = document.createElement('div'); head.className = 'order-head'; const title = document.createElement('h3'); title.textContent = `طلب #${o.id} — ${o.customerName} ← ${o.sellerName}`; const badge = document.createElement('span'); badge.className = 'status-badge status-' + o.status; badge.textContent = labels[o.status] || o.status; head.append(title, badge);
+                const meta = document.createElement('p'); meta.className = 'order-meta'; meta.innerHTML = `<b>${o.total} ج.م</b> — ${o.pickupTime}`; const phone = document.createElement('p'); phone.className = 'order-meta'; phone.textContent = `هاتف العميل: ${o.customerPhone || 'غير متاح'}`; card.append(head, meta, phone);
+                const actions = document.createElement('div'); actions.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;margin-top:10px';
+                for (const state of transitions[o.status] || []) { const button = document.createElement('button'); button.className = state === 'rejected' || state === 'cancelled' ? 'btn-red' : 'btn-green'; button.textContent = labels[state]; button.onclick = () => updateStatus(o.id, state); actions.append(button) }
+                if (actions.children.length) card.append(actions); box.append(card)
+            })
+        }
+        document.getElementById('orderPhoneSearch').addEventListener('input', renderOrders);
+        async function updateStatus(id, status) { const r = await fetch('/api/orders/status', { method: 'POST', body: new URLSearchParams({ order_id: id, status }) }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر تحديث الطلب'); return } loadOrders() }
+        async function createInvitation(event) { event.preventDefault(); const payload = new URLSearchParams({ target: document.getElementById('inviteTarget').value.trim(), days: document.getElementById('inviteDays').value }); const r = await fetch('/api/admin/invitations', { method: 'POST', body: payload }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر إنشاء الدعوة'); return } const result = document.getElementById('inviteResult'); result.className = 'invite-result'; result.replaceChildren(); const info = document.createElement('p'); info.textContent = 'رمز الدعوة: '; const code = document.createElement('code'); code.textContent = d.token; info.append(code); const exp = document.createElement('span'); exp.textContent = ` (ينتهي ${d.expiresAt})`; info.append(exp); const link = document.createElement('a'); link.href = `join.html?token=${encodeURIComponent(d.token)}`; link.textContent = 'رابط تسجيل الأم'; link.target = '_blank'; result.append(info, link); document.getElementById('inviteForm').reset(); loadInvitations() }
+        async function loadInvitations() {
+            const r = await fetch('/api/admin/invitations'); if (!r.ok) throw Error('تعذر تحميل الدعوات'); const list = await r.json(); const box = document.getElementById('invitations'); box.replaceChildren(); if (!list.length) { box.innerHTML = '<div class="empty-state">لا توجد دعوات بعد.</div>'; return }
+            list.forEach(inv => {
+                const line = document.createElement('div'); line.className = 'row-card'; const info = document.createElement('div'); info.className = 'r-info'; info.innerHTML = `<b>${inv.target}</b><small>الانتهاء: ${inv.expiresAt} — ${inv.used ? 'مستخدمة' : inv.valid ? 'صالحة' : 'منتهية/ملغاة'}</small>`; line.append(info);
+                if (inv.valid && !inv.used) { const revoke = document.createElement('button'); revoke.className = 'btn-ghost'; revoke.textContent = 'إلغاء الدعوة'; revoke.onclick = async () => { const response = await fetch('/api/admin/invitations', { method: 'DELETE', body: new URLSearchParams({ id: inv.id }) }); if (response.ok) loadInvitations() }; line.append(revoke) } box.append(line)
+            })
+        }
+        async function loadMothers() {
+            const r = await fetch('/api/admin/mothers'); if (!r.ok) throw Error('تعذر تحميل حسابات الأمهات'); const list = await r.json(); const box = document.getElementById('mothers'); box.replaceChildren(); const badge = document.getElementById('mothersCount'); if (list.length) { badge.hidden = false; badge.textContent = list.length } else badge.hidden = true;
+            if (!list.length) { box.innerHTML = '<div class="empty-state">لا توجد حسابات أمهات حتى الآن.</div>'; return }
+            list.forEach(m => {
+                const line = document.createElement('div'); line.className = 'row-card'; const avatar = document.createElement('span'); avatar.className = 'u-avatar mother'; avatar.textContent = (m.name || 'م').trim().charAt(0); avatar.style.cssText = 'width:38px;height:38px;font-size:15px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800';
+                const info = document.createElement('div'); info.className = 'r-info';
+                const name = document.createElement('b'); name.textContent = m.name || 'بدون اسم';
+                const details = document.createElement('small'); details.textContent = `${m.phone || 'بدون هاتف'} — ${m.email} — الحساب: ${statusNames[m.status] || m.status} — الاعتماد: ${m.approval}`;
+                info.append(name, details); line.append(avatar, info);
+                const actions = document.createElement('div'); actions.className = 'r-actions';
+                if (m.approval !== 'APPROVED') { const approve = document.createElement('button'); approve.className = 'btn-green'; approve.textContent = 'اعتماد'; approve.onclick = () => setMotherStatus(m.id, 'APPROVED'); actions.append(approve) }
+                if (m.approval !== 'REJECTED') { const reject = document.createElement('button'); reject.className = 'btn-red'; reject.textContent = 'رفض'; reject.onclick = () => setMotherStatus(m.id, 'REJECTED'); actions.append(reject) }
+                if (actions.children.length) line.append(actions); box.append(line)
+            })
+        }
+        async function setMotherStatus(id, status) { const r = await fetch('/api/admin/mothers/status', { method: 'POST', body: new URLSearchParams({ mother_id: id, status }) }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر تحديث حالة الأم'); return } loadMothers() }
+        async function logout() { await fetch('/api/logout', { method: 'POST' }); localStorage.removeItem('user'); location.href = 'index.html' }
+        initialize().catch(e => { document.getElementById('orders').textContent = e.message });
+    </script>
+</body>
+
+</html>
