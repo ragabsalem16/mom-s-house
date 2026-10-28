@@ -1,0 +1,2 @@
+rootProject.name = "BeitMama"
+include ':app'
