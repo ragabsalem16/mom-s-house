@@ -54,12 +54,14 @@ beit-mama/
 
 ## ⚙️ متطلبات التشغيل (Prerequisites)
 
-1. **Java Development Kit 17 أو أحدث**:
+1. **Java Development Kit 25 (LTS) أو أحدث** لتطبيق سطح المكتب:
    - تأكد من تثبيت Java على جهازك عبر تحميل [Oracle JDK](https://www.oracle.com/java/technologies/downloads/) أو [Adoptium Temurin](https://adoptium.net/).
    - بعد التثبيت يمكنك التأكد بكتابة: `java -version` في الطرفية (Terminal).
+   - يتطلب تجميع تطبيق سطح المكتب Java 25 أو أحدث.
+   - مشروع Android منفصل عن تطبيق سطح المكتب، ويحتفظ بمستوى مصدر Java 17 لضمان توافق Android؛ استخدم JDK 17 لتشغيل Gradle/Android Gradle Plugin الحالي.
 
 2. **قاعدة البيانات**:
-   - النظام مهيأ افتراضياً ليعمل عبر **SQLite** المدمجة أو **MySQL**.
+   - النظام مهيأ افتراضياً ليعمل عبر **SQLite**؛ يتم إنشاء قاعدة البيانات المحلية وتهيئتها عند تشغيل التطبيق، ولا تُرفع بياناتها إلى Git.
    - لاستخدام MySQL: قم باستيراد ملف [schema.sql](file:///Users/mac/.gemini/antigravity/scratch/beit-mama/db/schema.sql) وتعيين `USE_MYSQL = true` داخل كلاس [`DatabaseManager`](file:///Users/mac/.gemini/antigravity/scratch/beit-mama/src/com/beitmama/dao/DatabaseManager.java).
 
 ---
@@ -74,12 +76,13 @@ mvn compile
 
 ### 2. التشغيل (Run):
 ```bash
+export BEITMAMA_ADMIN_PASSWORD='استخدم-كلمة-مرور-قوية-وفريدة-لا-تقل-عن-12-حرفاً'
 mvn exec:java -Dexec.mainClass=com.beitmama.Main
 ```
 
 - ستفتح لك مباشرة نافذة **Java Swing** لتسجيل دخول المدير:
-  - **البريد الإلكتروني الافتراضي**: `admin@beitmama.com`
-  - **كلمة المرور الافتراضية**: `admin123`
+  - **البريد الإلكتروني**: `admin@beitmama.com`
+  - **كلمة المرور الأولية**: القيمة التي عيّنتها في `BEITMAMA_ADMIN_PASSWORD` قبل أول تشغيل؛ لا توجد كلمة مرور افتراضية.
 - وفي نفس الوقت، يعمل خادم الويب للعملاء والأمهات على:
   👉 **`http://localhost:8080/`**
 - إذا كان المنفذ 8080 مستخدماً، يمكن تشغيل المشروع على منفذ بديل:

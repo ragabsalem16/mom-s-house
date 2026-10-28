@@ -6,8 +6,18 @@ target/
 .idea/
 *.iml
 nbproject/private/
+.gradle/
+build/
+android/app/build/
+release/*.aab
+release/*.apk
 
 # Local database & temp files
 db/*.backup*
+db/beit_mama.db
 .DS_Store
 sources.txt
+
+# Local Android signing credentials and keystores
+android/keystore.properties
+android/*.jks

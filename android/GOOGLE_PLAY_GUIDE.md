@@ -20,8 +20,8 @@
 ## 2. ملفات ومفاتيح التوقيع (Signing & Assets)
 * **معرف التطبيق (Package Name):** `com.beitmama.app`
 * **مفتاح التوقيع (Keystore File):** `android/beitmama-release-key.jks`
-* **الـ Alias:** `beitmama`
-* **كلمة المرور (Password):** `beitmama123`
+* **بيانات التوقيع:** انسخ `android/keystore.properties.example` إلى `android/keystore.properties` واملأ القيم محلياً. ملف الإعداد والمفتاح مستثنيان من Git.
+* لا ترفع ملف المفتاح أو بيانات التوقيع إلى GitHub، واحتفظ بنسخة احتياطية آمنة منهما خارج المشروع.
 * **أيقونة المتجر (512x512 PNG):** متوفرة داخل مجلد `android/app_icon_512.png`
 * **رابط سياسة الخصوصية الإلزامي (Privacy Policy):** متوفر في `web/privacy-policy.html`
 

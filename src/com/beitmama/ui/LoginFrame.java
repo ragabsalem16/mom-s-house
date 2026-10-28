@@ -42,7 +42,7 @@ public class LoginFrame extends JFrame {
         emailField = new JTextField("admin@beitmama.com");
 
         JLabel lblPass = new JLabel("كلمة المرور:");
-        passwordField = new JPasswordField("admin123");
+        passwordField = new JPasswordField();
 
         fieldsPanel.add(lblEmail);
         fieldsPanel.add(emailField);

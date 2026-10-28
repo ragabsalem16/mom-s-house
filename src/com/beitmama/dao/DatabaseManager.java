@@ -3,6 +3,7 @@ package com.beitmama.dao;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -172,18 +173,31 @@ public class DatabaseManager {
     }
 
     private static void seedInitialData(Connection conn) {
+        String adminPassword = System.getenv("BEITMAMA_ADMIN_PASSWORD");
+        if (adminPassword == null || adminPassword.length() < 12) {
+            System.err.println("BEITMAMA_ADMIN_PASSWORD must be set to at least 12 characters to create the initial admin account.");
+        }
+
         try (Statement stmt = conn.createStatement()) {
-            // إضافة مدير نظام افتراضي (admin@beitmama.com / admin123)
-            String salt = com.beitmama.util.SecurityUtil.generateSalt();
-            String passHash = com.beitmama.util.SecurityUtil.hashPassword("admin123", salt);
-            stmt.executeUpdate("INSERT OR IGNORE INTO users (id, name, email, phone, password_hash, salt, role, status) " +
-                    "VALUES (1, 'مدير النظام', 'admin@beitmama.com', '01000000000', '" + passHash + "', '" + salt + "', 'ADMIN', 'ACTIVE')");
+            if (adminPassword != null && adminPassword.length() >= 12) {
+                String salt = com.beitmama.util.SecurityUtil.generateSalt();
+                String passHash = com.beitmama.util.SecurityUtil.hashPassword(adminPassword, salt);
+                try (PreparedStatement insertAdmin = conn.prepareStatement(
+                        "INSERT OR IGNORE INTO users (id, name, email, phone, password_hash, salt, role, status) " +
+                                "VALUES (1, 'مدير النظام', 'admin@beitmama.com', '01000000000', ?, ?, 'ADMIN', 'ACTIVE')")) {
+                    insertAdmin.setString(1, passHash);
+                    insertAdmin.setString(2, salt);
+                    insertAdmin.executeUpdate();
+                }
+            }
 
             // إضافة تصنيفات الأكلات الأساسية
             stmt.executeUpdate("INSERT OR IGNORE INTO categories (id, name) VALUES (1, 'محاشي ومحمر')");
             stmt.executeUpdate("INSERT OR IGNORE INTO categories (id, name) VALUES (2, 'طواجن ومكرونات')");
             stmt.executeUpdate("INSERT OR IGNORE INTO categories (id, name) VALUES (3, 'مخبوزات وفطائر')");
             stmt.executeUpdate("INSERT OR IGNORE INTO categories (id, name) VALUES (4, 'حلويات شرقية')");
-        } catch (SQLException ignored) {}
+        } catch (SQLException e) {
+            System.err.println("Initial data setup error: " + e.getMessage());
+        }
     }
 }
