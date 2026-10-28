@@ -1,0 +1,21 @@
+{
+  "name": "Mom's House - بيت ماما",
+  "short_name": "Mom's House",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#c2185b",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/images/hero_feast.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/images/hero_feast.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}

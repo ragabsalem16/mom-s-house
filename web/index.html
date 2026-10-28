@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيت ماما | أكل بيتي .. من إيدين أمهاتنا</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mom's House">
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js');
+      }
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -815,6 +825,13 @@
                     <input type="text" id="searchInput" placeholder="ابحث عن أكلة، أو أم، أو منطقة..." oninput="renderProducts()">
                     <button type="button" onclick="renderProducts()">بحث</button>
                 </div>
+
+                <!-- زر تثبيت التطبيق المباشر (PWA) -->
+                <div style="margin-top: 18px;">
+                    <button id="pwaInstallBtn" onclick="installAppPWA()" style="display: inline-flex; align-items: center; gap: 10px; background: #c2185b; color: #fff; padding: 13px 26px; border: none; border-radius: 999px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 15px rgba(194,24,91,0.35); cursor: pointer; transition: 0.2s;">
+                        <span>📲 تثبيت التطبيق على هاتفك فوراً</span>
+                    </button>
+                </div>
             </div>
         </div>
     </section>
@@ -1104,6 +1121,24 @@
 
         function openCart() {
             window.location.href = 'my-orders.html';
+        }
+
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const btn = document.getElementById('pwaInstallBtn');
+            if (btn) btn.style.display = 'inline-flex';
+        });
+
+        async function installAppPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                deferredPrompt = null;
+            } else {
+                alert('لتثبيت التطبيق على هاتفك فوراً:\n1- اضغط على زر خيارات المتصفح (⋮) أو زر المشاركة (Share).\n2- اختر "إضافة إلى الشاشة الرئيسية" أو "تثبيت التطبيق (Install App)".\nوسيظهر كأيقونة تطبيق رسمي على شاشة هاتفك مباشرة!');
+            }
         }
 
         window.onload = init;
