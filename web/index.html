@@ -1127,17 +1127,18 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            const btn = document.getElementById('pwaInstallBtn');
-            if (btn) btn.style.display = 'inline-flex';
         });
 
         async function installAppPWA() {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
-                deferredPrompt = null;
+                if (outcome === 'accepted') {
+                    deferredPrompt = null;
+                }
             } else {
-                alert('لتثبيت التطبيق على هاتفك فوراً:\n1- اضغط على زر خيارات المتصفح (⋮) أو زر المشاركة (Share).\n2- اختر "إضافة إلى الشاشة الرئيسية" أو "تثبيت التطبيق (Install App)".\nوسيظهر كأيقونة تطبيق رسمي على شاشة هاتفك مباشرة!');
+                // إذا كان الهاتف لا يدعم نافذة PWA التلقائية فوراً، نقوم بتنزيل وتثبيت التطبيق مباشرة
+                window.location.href = 'momshouse.apk';
             }
         }
 
