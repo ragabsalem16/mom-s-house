@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>إعدادات الحساب | بيت ماما</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>*{box-sizing:border-box;font-family:Cairo,sans-serif}body{margin:0;background:#fdfaf6;color:#333}.box{max-width:500px;margin:50px auto;background:white;padding:25px;border-radius:14px;box-shadow:0 4px 20px #0001}input{width:100%;padding:11px;border:1px solid #ddd;border-radius:8px;margin:6px 0 14px}button{width:100%;background:#f26522;color:#fff;border:0;border-radius:8px;padding:12px;font:inherit;cursor:pointer}a{color:#d84f0e}</style>
+<link rel="stylesheet" href="css/theme.css">
+    <script src="js/theme.js"></script>
+</head><body><header><div class="navbar"><a href="index.html" class="logo" aria-label="بيت ماما - الرئيسية"><span class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span><span class="logo-text"><b>بيت ماما</b><small>إعدادات الحساب</small></span></a><nav><a href="index.html">المتجر ←</a></nav></div></header><main class="box"><h1>تغيير كلمة المرور</h1><p>لأمان الحساب، يجب إدخال كلمة المرور الحالية. الاستعادة عبر البريد أو الرسائل تتطلب إعداد مزود خارجي.</p>
+<form onsubmit="changePassword(event)"><label>كلمة المرور الحالية<input id="current" type="password" required autocomplete="current-password"></label><label>كلمة المرور الجديدة (8 أحرف على الأقل)<input id="next" type="password" minlength="8" required autocomplete="new-password"></label><label>تأكيد كلمة المرور الجديدة<input id="confirm" type="password" minlength="8" required autocomplete="new-password"></label><button>حفظ كلمة المرور</button></form><p id="message"></p><a href="index.html">العودة للمتجر</a></main>
+<script>
+async function changePassword(e){e.preventDefault();const message=document.getElementById('message');const currentPassword=document.getElementById('current').value;const newPassword=document.getElementById('next').value;const confirmation=document.getElementById('confirm').value;if(newPassword!==confirmation){message.textContent='كلمتا المرور غير متطابقتين';return}const r=await fetch('/api/account/password',{method:'POST',body:new URLSearchParams({current_password:currentPassword,new_password:newPassword})});const d=await r.json();message.textContent=d.success?'تم تغيير كلمة المرور بنجاح':d.message;if(d.success)e.target.reset()}
+(async()=>{const r=await fetch('/api/me');if(!r.ok)location.href='login.html'})();
+</script></body></html>

@@ -1,0 +1,17 @@
+.git
+.claude
+.vscode
+.github
+target
+bin
+lib
+nbproject
+*.iml
+.env
+.env.*
+!.env.example
+data
+db/*.db
+*.jks
+android
+*.log

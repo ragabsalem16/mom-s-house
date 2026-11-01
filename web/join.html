@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل انضمام أم طاهية | بيت ماما</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-pink: #c2185b;
+            --brand-pink-dark: #9c1048;
+            --brand-pink-light: #fce4ec;
+            --brand-green: #2e7d32;
+            --text-main: #212121;
+            --text-sub: #666666;
+            --bg-page: #fbf9f8;
+            --card-border: #f0e6e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.5; min-height: 100vh; }
+
+        /* Header */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #f2eaea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-badge svg { width: 34px; height: 34px; }
+        .logo-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-pink);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--brand-pink); }
+        .login-btn {
+            background: var(--brand-pink);
+            color: #fff;
+            padding: 8px 22px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+        .login-btn:hover { background: var(--brand-pink-dark); }
+
+        /* Form Card */
+        .container {
+            max-width: 640px;
+            margin: 40px auto 60px;
+            background: #ffffff;
+            padding: 38px 34px;
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 12px 35px rgba(194, 24, 91, 0.05);
+        }
+        .header-title-box {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .header-title-box h2 {
+            color: var(--brand-pink);
+            font-weight: 900;
+            font-size: 26px;
+            margin-bottom: 6px;
+        }
+        .header-title-box p {
+            color: var(--text-sub);
+            font-size: 14px;
+        }
+
+        .alert-box {
+            background-color: var(--brand-pink-light);
+            border: 1px solid #f8bbd0;
+            padding: 12px 16px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            font-size: 13.5px;
+            color: var(--brand-pink-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group small { display: block; margin-top: 5px; color: var(--text-sub); font-size: 12px; }
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 6px;
+            font-size: 13.5px;
+            color: #333;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #dedede;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #222;
+            background: #fafafa;
+            transition: 0.2s;
+        }
+        input:focus, textarea:focus {
+            border-color: var(--brand-pink);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.12);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--brand-pink);
+            color: #fff;
+            padding: 13px;
+            border: none;
+            border-radius: 999px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 6px 18px rgba(194, 24, 91, 0.25);
+            transition: all 0.2s;
+        }
+        .btn-submit:hover {
+            background: var(--brand-pink-dark);
+            transform: translateY(-2px);
+        }
+        .footer-links { text-align: center; margin-top: 20px; font-size: 14px; }
+        .footer-links a { color: var(--brand-pink); text-decoration: none; font-weight: 700; }
+        .footer-links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <span class="logo-badge">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
+                    </svg>
+                </span>
+                <span class="logo-title">بيت ماما</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="index.html#foods">الطلبات</a></li>
+                    <li><a href="join.html" class="active">تسجيل الأمهات</a></li>
+                    <li><a href="login.html">تسجيل الدخول</a></li>
+                </ul>
+            </nav>
+
+            <a href="login.html" class="login-btn">تسجيل الدخول</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="header-title-box">
+            <h2>انضمي إلى أسرة طاهيات بيت ماما 👩‍🍳</h2>
+            <p>التسجيل متاح لحاملي رموز الدعوة لضمان أعلى معايير الجودة والنظافة المنزلية.</p>
+        </div>
+
+        <div class="alert-box">
+            <span>ℹ️</span>
+            <span>بعد التسجيل، يقوم فريق الإدارة بمراجعة حسابك وتفعيله لتبدئي في نشر أكلاتك اللذيذة.</span>
+        </div>
+
+        <form id="motherForm" onsubmit="handleMotherRegister(event)">
+            <div class="form-group">
+                <label>رمز الدعوة (Invitation Token): *</label>
+                <input type="text" id="token" required placeholder="ادخلي رمز الدعوة المستلم من الإدارة">
+            </div>
+
+            <div class="form-group">
+                <label>اسم الأم / اسم المطبخ البيتي: *</label>
+                <input type="text" id="name" required placeholder="مثال: مطبخ ماما فاطمة">
+            </div>
+
+            <div class="form-group">
+                <label>البريد الإلكتروني: *</label>
+                <input type="email" id="email" required placeholder="mama@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">رقم الهاتف للتواصل: *</label>
+                <input type="tel" id="phone" required placeholder="010XXXXXXXX">
+            </div>
+
+            <div class="form-group">
+                <label for="region">المنطقة التي تعيشين فيها: *</label>
+                <input type="text" id="region" required maxlength="100" placeholder="مثال: مدينة نصر">
+                <small>سيظهر اسم المنطقة فقط على كروت أكلاتك؛ لن يظهر عنوان الاستلام أو رقم الهاتف.</small>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور: *</label>
+                <input type="password" id="password" required placeholder="••••••••">
+            </div>
+
+            <div class="form-group">
+                <label>عنوان استلام الأكل (محمي ولن يظهر إلا للعميل بعد تأكيد الطلب): *</label>
+                <input type="text" id="address" required placeholder="المدينة، المنطقة، اسم الشارع، رقم المنزل">
+            </div>
+
+            <div class="form-group">
+                <label>تعليمات ومواعيد الاستلام من المنزل:</label>
+                <textarea id="instructions" rows="2" placeholder="مثال: الاستلام متاح يومياً من 1 ظهراً حتى 7 مساءً"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>نبذة عن أكلاتك وتخصصك:</label>
+                <textarea id="bio" rows="3" placeholder="تخصصي في المحاشي المصرية الأصيلة، المكرونة البشاميل، وصواني العزومات..."></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">تسجيل الحساب وإرسال للمراجعة</button>
+        </form>
+
+        <div class="footer-links">
+            <a href="index.html">← العودة إلى الصفحة الرئيسية</a>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            if (token) {
+                document.getElementById('token').value = token;
+            }
+        };
+
+        async function handleMotherRegister(e) {
+            e.preventDefault();
+            const payload = {
+                token: document.getElementById('token').value.trim(),
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                region: document.getElementById('region').value.trim(),
+                password: document.getElementById('password').value,
+                pickup_address: document.getElementById('address').value.trim(),
+                pickup_instructions: document.getElementById('instructions').value.trim(),
+                bio: document.getElementById('bio').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/register/mother', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams(payload).toString()
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert('أهلاً بكِ في بيت ماما! تم إرسال طلبك للإدارة وسيتم تفعيل حسابك قريباً.');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('خطأ في التسجيل: ' + (data.message || 'رمز الدعوة غير صالح'));
+                }
+            } catch (err) {
+                alert('فشل الاتصال بالخادم.');
+            }
+        }
+    </script>
+</body>
+</html>

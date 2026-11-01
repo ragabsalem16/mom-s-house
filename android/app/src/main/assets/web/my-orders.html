@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلباتي | بيت ماما</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-pink: #c2185b;
+            --brand-pink-dark: #9c1048;
+            --brand-pink-light: #fce4ec;
+            --brand-green: #2e7d32;
+            --text-main: #212121;
+            --text-sub: #666666;
+            --bg-page: #fbf9f8;
+            --card-border: #f0e6e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.5; min-height: 100vh; }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #f2eaea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-badge svg { width: 34px; height: 34px; }
+        .logo-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-pink);
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            list-style: none;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: #444;
+            font-weight: 600;
+            font-size: 15px;
+            transition: 0.2s;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--brand-pink); }
+
+        .container { max-width: 960px; margin: 40px auto 60px; padding: 0 20px; }
+        .page-title {
+            margin-bottom: 25px;
+            color: var(--brand-pink);
+            font-size: 26px;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 24px rgba(194, 24, 91, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            transition: all 0.25s;
+        }
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(194, 24, 91, 0.08);
+            border-color: #f8bbd0;
+        }
+        .order-info h4 {
+            margin-bottom: 6px;
+            color: #212121;
+            font-size: 18px;
+            font-weight: 800;
+        }
+        .order-info p { font-size: 14px; color: var(--text-sub); margin-bottom: 4px; }
+        
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .status-pending { background: #fff3e0; color: #e65100; border: 1px solid #ffe0b2; }
+        .status-confirmed { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; }
+        .status-preparing { background: #e3f2fd; color: #1565c0; border: 1px solid #bbdefb; }
+        .status-ready { background: #e0f2f1; color: #00695c; border: 1px solid #b2dfdb; }
+        .status-completed { background: var(--brand-pink); color: #fff; }
+        .status-rejected, .status-cancelled { background: #ffebee; color: #c62828; border: 1px solid #ffcdd2; }
+
+        .notice {
+            background: #fff8fa;
+            border: 1px dashed var(--brand-pink);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin: 14px 0;
+            color: var(--brand-pink-dark);
+            font-size: 14px;
+        }
+        .review-form {
+            margin-top: 14px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .review-form select, .review-form input {
+            padding: 9px 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font: inherit;
+            background: #fff;
+        }
+        .review-form button {
+            background: var(--brand-pink);
+            color: white;
+            border: 0;
+            border-radius: 999px;
+            padding: 9px 20px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .review-form button:hover { background: var(--brand-pink-dark); }
+        .empty-orders {
+            text-align: center;
+            padding: 60px 20px;
+            background: #fff;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+        .empty-orders h3 { font-size: 20px; color: var(--brand-pink); margin-bottom: 10px; }
+        .empty-orders p { color: #777; margin-bottom: 20px; }
+        .browse-btn {
+            background: var(--brand-pink);
+            color: #fff;
+            padding: 10px 28px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 800;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-area">
+                <span class="logo-badge">
+                    <svg viewBox="0 0 40 40" fill="none">
+                        <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
+                    </svg>
+                </span>
+                <span class="logo-title">بيت ماما</span>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">الرئيسية</a></li>
+                    <li><a href="my-orders.html" class="active">طلباتي</a></li>
+                    <li><a href="join.html">تسجيل الأمهات</a></li>
+                    <li><a href="login.html">تسجيل الدخول</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2 class="page-title">
+            <span>🧺</span>
+            متابعة طلباتي البيتية
+        </h2>
+        <div id="ordersContainer">
+            <p style="text-align:center; padding:30px; color:#888;">جاري تحميل طلباتك...</p>
+        </div>
+    </div>
+
+    <script>
+        const statusMap = {
+            pending: { text: 'قيد الانتظار', class: 'status-pending' },
+            confirmed: { text: 'تم التأكيد من الأم', class: 'status-confirmed' },
+            preparing: { text: 'جاري التجهيز في المطبخ', class: 'status-preparing' },
+            ready: { text: 'الوجبة جاهزة للاستلام', class: 'status-ready' },
+            completed: { text: 'مكتمل بنجاح', class: 'status-completed' },
+            rejected: { text: 'اعتذرت الأم عن الطلب', class: 'status-rejected' },
+            cancelled: { text: 'تم الإلغاء', class: 'status-cancelled' }
+        };
+
+        async function loadMyOrders() {
+            try {
+                const res = await fetch('/api/my-orders');
+                if (res.status === 401) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const orders = await res.json();
+                const container = document.getElementById('ordersContainer');
+                container.innerHTML = '';
+
+                if (!orders || orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-orders">
+                            <h3>لا توجد طلبات سابقة بعد</h3>
+                            <p>أشهى الأكلات البيتية المحضرة بحب بانتظارك!</p>
+                            <a href="index.html#foods" class="browse-btn">تصفح أكلات أمهاتنا الآن</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                orders.forEach(o => {
+                    const st = statusMap[o.status] || { text: o.status, class: 'status-pending' };
+                    const card = document.createElement('div');
+                    card.className = 'order-card';
+                    card.innerHTML = `
+                        <div class="order-info">
+                            <h4>طلب رقم #${o.id} — مطبخ ${o.sellerName || 'الأم'}</h4>
+                            <p><strong>الإجمالي:</strong> ${o.total} ج.م (الدفع كاش عند الاستلام)</p>
+                            <p><strong>موعد الاستلام:</strong> ${o.pickupTime}</p>
+                            ${o.pickupAddress ? `<div class="notice">📍 <strong>عنوان استلام الأكل:</strong> ${o.pickupAddress}</div>` : ''}
+                        </div>
+                        <div>
+                            <span class="status-badge ${st.class}">${st.text}</span>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (e) {
+                document.getElementById('ordersContainer').innerHTML = '<p style="text-align:center; color:#c62828;">تعذر تحميل الطلبات، يرجى المحاولة لاحقاً.</p>';
+            }
+        }
+
+        window.onload = loadMyOrders;
+    </script>
+</body>
+</html>

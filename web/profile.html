@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>بيانات حسابي | بيت ماما</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand-pink: #c2185b;
+            --brand-pink-dark: #9c1048;
+            --brand-pink-light: #fce4ec;
+            --brand-green: #2e7d32;
+            --text-main: #212121;
+            --text-sub: #666666;
+            --bg-page: #fbf9f8;
+            --card-border: #f0e6e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; line-height: 1.5; }
+
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid #f2eaea;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .logo-badge svg { width: 34px; height: 34px; }
+        .logo-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-pink);
+        }
+
+        .box {
+            max-width: 580px;
+            margin: 40px auto 60px;
+            padding: 36px 32px;
+            background: #ffffff;
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 12px 35px rgba(194, 24, 91, 0.05);
+        }
+        h1 {
+            color: var(--brand-pink);
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        .sub-desc {
+            color: var(--text-sub);
+            font-size: 14px;
+            margin-bottom: 22px;
+        }
+        label {
+            display: block;
+            margin: 14px 0 6px;
+            font-weight: 700;
+            font-size: 13.5px;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #dedede;
+            border-radius: 12px;
+            font: inherit;
+            background: #fafafa;
+            color: #222;
+            transition: 0.2s;
+        }
+        input:focus, select:focus {
+            border-color: var(--brand-pink);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.12);
+        }
+        input[readonly] { background: #f0f0f0; color: #777; cursor: not-allowed; }
+        button {
+            width: 100%;
+            margin-top: 24px;
+            padding: 12px;
+            background: var(--brand-pink);
+            color: #fff;
+            border: 0;
+            border-radius: 999px;
+            font: inherit;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(194, 24, 91, 0.25);
+            transition: 0.2s;
+        }
+        button:hover { background: var(--brand-pink-dark); transform: translateY(-2px); }
+        .message { min-height: 24px; margin-top: 10px; text-align: center; font-weight: 700; font-size: 13px; color: var(--brand-pink); }
+        .links { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 22px; border-top: 1px solid #eee; padding-top: 16px; font-size: 14px; }
+        a { color: var(--brand-pink); text-decoration: none; font-weight: 700; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<header>
+    <div class="nav-container">
+        <a href="index.html" class="logo-area">
+            <span class="logo-badge">
+                <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
+                </svg>
+            </span>
+            <span class="logo-title">بيت ماما</span>
+        </a>
+        <a href="index.html" style="color:var(--brand-pink); font-weight:700; text-decoration:none;">← العودة للرئيسية</a>
+    </div>
+</header>
+<main class="box">
+    <h1>بيانات حسابي</h1>
+    <p class="sub-desc">احفظ بياناتك لتظهر تلقائياً عند تجهيز وطلب أكلاتك البيتية المفضلة.</p>
+    <form id="profileForm">
+        <label for="name">الاسم بالكامل</label>
+        <input id="name" name="name" maxlength="150" required>
+        <label for="email">البريد الإلكتروني</label>
+        <input id="email" name="email" type="email" readonly>
+        <label for="phone">رقم الهاتف</label>
+        <input id="phone" name="phone" type="tel" maxlength="30" required>
+        <label for="address">العنوان الافتراضي للتوصيل والاستلام</label>
+        <input id="address" name="address" maxlength="500" autocomplete="street-address" placeholder="المدينة، الحي، اسم الشارع">
+        <label for="preferredContact">وسيلة التواصل المفضلة</label>
+        <select id="preferredContact" name="preferred_contact">
+            <option value="phone">مكالمة هاتفية</option>
+            <option value="whatsapp">واتساب</option>
+            <option value="sms">رسالة SMS</option>
+        </select>
+        <button type="submit">حفظ التغييرات</button>
+    </form>
+    <div class="message" id="msg"></div>
+    <div class="links">
+        <a href="my-orders.html">طلباتي السابقة</a>
+        <a href="index.html#foods">تصفح الوجبات</a>
+    </div>
+</main>
+<script>
+    async function loadProfile() {
+        try {
+            const res = await fetch('/api/me');
+            if (!res.ok) { location.href = 'login.html'; return; }
+            const data = await res.json();
+            const u = data.user;
+            document.getElementById('name').value = u.name || '';
+            document.getElementById('email').value = u.email || '';
+            document.getElementById('phone').value = u.phone || '';
+            document.getElementById('address').value = u.address || '';
+            if (u.preferred_contact) document.getElementById('preferredContact').value = u.preferred_contact;
+        } catch (e) {}
+    }
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const msg = document.getElementById('msg');
+        msg.textContent = 'جاري الحفظ...';
+        const payload = new URLSearchParams(new FormData(this));
+        try {
+            const res = await fetch('/api/profile', { method: 'POST', body: payload });
+            const data = await res.json();
+            msg.textContent = data.message || (data.success ? 'تم الحفظ بنجاح!' : 'حدث خطأ');
+        } catch (e) {
+            msg.textContent = 'تعذر الاتصال بالخادم';
+        }
+    });
+    window.onload = loadProfile;
+</script>
+</body>
+</html>

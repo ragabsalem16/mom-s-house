@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+/target/
+/bin/
+/data/
+/db/*.db
+*.jks
+.DS_Store
+android/.gradle/
+android/app/build/
+*.apk
+*.aab

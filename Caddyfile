@@ -1,0 +1,3 @@
+{$BEITMAMA_DOMAIN} {
+    reverse_proxy beitmama:8080
+}

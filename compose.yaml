@@ -1,0 +1,37 @@
+services:
+  beitmama:
+    build: .
+    restart: unless-stopped
+    environment:
+      PORT: "8080"
+      BEITMAMA_HEADLESS: "true"
+      BEITMAMA_PRODUCTION: "true"
+      BEITMAMA_ADMIN_PASSWORD: ${BEITMAMA_ADMIN_PASSWORD:?Set a unique admin password in .env}
+      BEITMAMA_SQLITE_PATH: /data/beit_mama.db
+      BEITMAMA_PUBLIC_URL: ${BEITMAMA_PUBLIC_URL:?Set the public HTTPS URL in .env}
+      BEITMAMA_SECURE_COOKIES: "true"
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+    volumes:
+      - beit_mama_data:/data
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - beitmama
+    environment:
+      BEITMAMA_DOMAIN: ${BEITMAMA_DOMAIN:?Set the public hostname in .env}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+volumes:
+  beit_mama_data:
+  caddy_data:
+  caddy_config:
