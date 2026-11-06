@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="js/api-client.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>طلباتي | بيت ماما</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/customer-shell.css">
     <style>
         :root {
-            --brand-pink: #c2185b;
-            --brand-pink-dark: #9c1048;
-            --brand-pink-light: #fce4ec;
-            --brand-green: #2e7d32;
-            --text-main: #212121;
-            --text-sub: #666666;
-            --bg-page: #fbf9f8;
-            --card-border: #f0e6e6;
+            --brand-pink: #8A0034;
+            --brand-pink-dark: #700028;
+            --brand-pink-light: #FFF0F3;
+            --brand-rose: #E63956;
+            --brand-green: #2F9E44;
+            --text-main: #20181B;
+            --text-sub: #756A6E;
+            --bg-page: #FAF7F8;
+            --card-border: #F3E7EB;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg-page); color: var(--text-main); line-height: 1.5; min-height: 100vh; }
 
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #f2eaea;
+            background: rgba(253, 251, 251, 0.94);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--card-border);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -165,31 +169,11 @@
             display: inline-block;
         }
     </style>
+    <link rel="stylesheet" href="css/app-polish.css">
 </head>
 <body>
 
-    <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">
-                <span class="logo-badge">
-                    <svg viewBox="0 0 40 40" fill="none">
-                        <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
-                    </svg>
-                </span>
-                <span class="logo-title">بيت ماما</span>
-            </a>
-
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="my-orders.html" class="active">طلباتي</a></li>
-                    <li><a href="join.html">تسجيل الأمهات</a></li>
-                    <li><a href="login.html">تسجيل الدخول</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <beit-mama-header></beit-mama-header>
 
     <div class="container">
         <h2 class="page-title">
@@ -214,7 +198,7 @@
 
         async function loadMyOrders() {
             try {
-                const res = await fetch('/api/my-orders');
+                const res = await fetch('/api/orders');
                 if (res.status === 401) {
                     window.location.href = 'login.html';
                     return;
@@ -241,7 +225,7 @@
                     card.innerHTML = `
                         <div class="order-info">
                             <h4>طلب رقم #${o.id} — مطبخ ${o.sellerName || 'الأم'}</h4>
-                            <p><strong>الإجمالي:</strong> ${o.total} ج.م (الدفع كاش عند الاستلام)</p>
+                            <p><strong>الإجمالي:</strong> ${o.totalAmount ?? o.total ?? 0} ج.م (الدفع كاش عند الاستلام)</p>
                             <p><strong>موعد الاستلام:</strong> ${o.pickupTime}</p>
                             ${o.pickupAddress ? `<div class="notice">📍 <strong>عنوان استلام الأكل:</strong> ${o.pickupAddress}</div>` : ''}
                         </div>
@@ -258,5 +242,7 @@
 
         window.onload = loadMyOrders;
     </script>
+    <custom-dock-bottom-bar selected-index="1"></custom-dock-bottom-bar>
+    <script src="js/custom-dock-bottom-bar.js"></script>
 </body>
 </html>

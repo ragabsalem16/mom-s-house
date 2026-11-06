@@ -2,170 +2,221 @@
 <html lang="ar" dir="rtl">
 
 <head>
+    <script src="js/api-client.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>لوحة الأم | بيت ماما</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/customer-shell.css">
     <link rel="stylesheet" href="css/theme.css">
     <script src="js/theme.js"></script>
     <style>
-        .page-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 14px;
-            margin: 34px 0 6px;
+        :root {
+            --primary: #8A0034;
+            --primary-dark: #6e0029;
+            --primary-light: #b02559;
+            --secondary: #3b1822;
+            --accent: #E63956;
+            --bg-page: #FAF7F8;
+            --card-border: #F3E7EB;
+            --text-main: #20181B;
+            --text-muted: #756A6E;
         }
 
-        .page-head h1 {
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
             margin: 0;
-            font-size: 30px;
-            font-weight: 800;
-            color: var(--secondary);
+            padding-bottom: 70px;
         }
 
-        .page-head .page-sub {
-            color: var(--text-muted);
-            font-size: 13.5px;
-            margin-top: 4px;
+        /* Modern Mobile Tab Navigation */
+        .dash-tabs {
+            display: flex;
+            background: linear-gradient(135deg, rgba(255, 213, 226, .96), rgba(239, 157, 183, .94) 56%, rgba(255, 224, 233, .96));
+            border-radius: 26px;
+            padding: 7px;
+            margin: 16px 0 20px;
+            border: 1px solid rgba(138, 0, 52, .18);
+            box-shadow: 0 12px 30px rgba(112, 0, 40, .15), inset 0 1px 0 rgba(255, 255, 255, .72);
+            gap: 6px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-
-        .welcome-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 18px;
-            border-radius: 999px;
-            background: linear-gradient(135deg, #f6e8d7, #efe4d0);
-            border: 1px solid rgba(150, 66, 47, .15);
-            color: #8a4a34;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 6px 18px rgba(150, 66, 47, .1);
-        }
-
-        .welcome-chip .chip-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+        .dash-tab-btn {
+            flex: 1;
+            min-width: 80px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #c05a40, #96422f);
-            color: #fff;
-            font-weight: 800;
+            gap: 6px;
+            padding: 10px 14px;
+            border: none;
+            background: transparent;
+            color: #684651;
+            font-weight: 700;
+            font-size: 13.5px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+        .dash-tab-btn.active {
+            background: rgba(255, 255, 255, .66);
+            color: var(--primary) !important;
+            box-shadow: 0 4px 12px rgba(112, 0, 40, .1);
+        }
+        .dash-tab-btn:focus-visible {
+            outline: 3px solid var(--primary);
+            outline-offset: 2px;
         }
 
-        /* كروت الإحصائيات */
+        .tab-panel {
+            display: none;
+            animation: fadeInTab 0.3s ease;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header compact & sticky at the very top */
+        body > header {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 100 !important;
+            margin: 0 !important;
+            padding: 8px 16px !important;
+            background: #fff !important;
+            box-shadow: 0 2px 10px rgba(138, 0, 52, 0.06) !important;
+        }
+        body > header .navbar {
+            min-height: auto !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+        }
+
+        .page-head {
+            margin: 12px 0 6px !important;
+        }
+
+        /* 4 Stats Chips in a single clean horizontal row matching the mockup exactly */
         .dash-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            gap: 16px;
-            margin: 22px 0 8px;
+            display: grid !important;
+            grid-template-columns: repeat(4, 1fr) !important;
+            gap: 8px !important;
+            margin: 12px 0 10px !important;
         }
 
         .dash-stat {
-            padding: 18px 20px;
-            border-radius: 18px;
-            border: 1px solid rgba(110, 93, 68, .12);
-            background: linear-gradient(145deg, #fffdf8, #f8f2e8);
-            box-shadow: 0 10px 26px rgba(48, 52, 44, .07);
-            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s;
-        }
-
-        .dash-stat:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 34px rgba(48, 52, 44, .12);
-        }
-
-        .dash-stat .num {
-            display: block;
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            line-height: 1.1;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .dash-stat .lbl {
-            color: var(--text-muted);
-            font-size: 12.5px;
-            font-weight: 600;
-            margin-top: 4px;
-            display: block;
+            padding: 10px 6px !important;
+            border-radius: 14px !important;
+            border: 1px solid var(--card-border) !important;
+            background: #fff !important;
+            box-shadow: 0 4px 12px rgba(138, 0, 52, 0.04) !important;
+            text-align: center !important;
         }
 
         .dash-stat svg {
-            width: 26px;
-            height: 26px;
-            color: var(--accent);
-            margin-bottom: 8px;
+            width: 18px !important;
+            height: 18px !important;
+            color: var(--accent) !important;
+            margin: 0 auto 3px !important;
+            display: block !important;
         }
 
-        /* بانلات */
+        .dash-stat .num {
+            display: block !important;
+            font-size: 18px !important;
+            font-weight: 900 !important;
+            color: var(--primary) !important;
+            line-height: 1.1 !important;
+        }
+
+        .dash-stat .lbl {
+            color: var(--text-muted) !important;
+            font-size: 10.5px !important;
+            font-weight: 700 !important;
+            margin-top: 2px !important;
+            display: block !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+
         .panel {
-            border: 1px solid rgba(110, 93, 68, .12);
-            border-radius: 22px;
-            padding: 26px 26px 22px;
-            margin: 22px 0;
-            background: rgba(255, 254, 250, .96);
-            box-shadow: 0 14px 36px rgba(48, 52, 44, .08);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px 18px;
+            margin: 12px 0 20px;
+            background: #fff;
+            box-shadow: 0 10px 30px rgba(138, 0, 52, 0.05);
         }
 
         .panel>h2 {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 20px;
-            margin: 0 0 18px;
-            color: var(--secondary);
+            font-size: 18px;
+            margin: 0 0 16px;
+            color: var(--primary);
+            font-weight: 800;
         }
 
         .panel>h2 .h-icon {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 38px;
-            height: 38px;
+            width: 36px;
+            height: 36px;
             border-radius: 12px;
-            background: linear-gradient(135deg, rgba(192, 90, 64, .14), rgba(150, 66, 47, .1));
+            background: #fff0f3;
             color: var(--primary);
             flex-shrink: 0;
         }
 
         .panel>h2 .h-icon svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
         }
 
         .panel>h2 .count-badge {
-            min-width: 26px;
-            height: 26px;
+            min-width: 24px;
+            height: 24px;
             padding: 0 8px;
             border-radius: 999px;
-            background: linear-gradient(135deg, #c05a40, #96422f);
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: #fff;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 800;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
 
-        /* نموذج الوجبة */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 4px 18px;
+            grid-template-columns: 1fr;
+            gap: 4px 14px;
+        }
+        @media(min-width: 600px) {
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
 
         .form-grid label,
         .panel label {
             display: block;
-            color: #4a5949;
+            color: var(--secondary);
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 13px;
         }
 
         .form-grid input,
@@ -174,29 +225,57 @@
         .panel input,
         .panel textarea {
             width: 100%;
-            padding: 11px 13px;
+            padding: 11px 14px;
             margin: 5px 0 12px;
-            border: 1px solid #dedfd2 !important;
-            border-radius: 11px !important;
-            background: #fffefa;
+            border: 1px solid #E8DFE3 !important;
+            border-radius: 12px !important;
+            background: #FAF7F8;
             font: inherit;
-            transition: border-color .2s, box-shadow .2s;
+            color: var(--text-main);
+            box-sizing: border-box;
+            transition: all .2s;
+        }
+        .form-grid input:focus,
+        .form-grid select:focus,
+        .form-grid textarea:focus,
+        .panel input:focus,
+        .panel textarea:focus {
+            outline: none;
+            border-color: var(--primary) !important;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(138, 0, 52, 0.1);
+        }
+
+        /* Image Upload Box */
+        .upload-dropzone {
+            border: 2px dashed #e8cbd4;
+            border-radius: 16px;
+            padding: 18px;
+            text-align: center;
+            background: #fff9fb;
+            cursor: pointer;
+            margin: 6px 0 14px;
+            transition: 0.25s ease;
+        }
+        .upload-dropzone:hover {
+            border-color: var(--primary);
+            background: #fff0f3;
         }
 
         .check-row {
             display: flex;
             align-items: center;
             gap: 8px;
-            color: #4a5949;
+            color: var(--secondary);
             font-weight: 700;
             font-size: 13.5px;
-            margin: 4px 0 14px;
+            margin: 6px 0 14px;
         }
 
         .check-row input {
             width: auto !important;
             margin: 0 !important;
-            accent-color: #c05a40;
+            accent-color: var(--primary);
             transform: scale(1.15);
         }
 
@@ -204,33 +283,33 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         .btn-main {
             border: 0;
-            border-radius: 12px;
-            padding: 11px 24px;
-            background: linear-gradient(135deg, #c05a40, #96422f);
+            border-radius: 999px;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
             color: #fff;
             font: inherit;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 6px 16px rgba(151, 69, 49, .2);
-            transition: all .25s cubic-bezier(.22, 1, .36, 1);
+            box-shadow: 0 6px 18px rgba(138, 0, 52, 0.22);
+            transition: all .25s ease;
         }
 
         .btn-main:hover {
-            background: linear-gradient(135deg, #a94e39, #8f402f);
             transform: translateY(-2px);
-            box-shadow: 0 9px 20px rgba(151, 69, 49, .28);
+            box-shadow: 0 10px 24px rgba(138, 0, 52, 0.3);
         }
 
         .btn-ghost {
-            border: 1px solid #d0ab8e;
-            border-radius: 12px;
-            padding: 11px 22px;
+            border: 1px solid var(--primary);
+            border-radius: 999px;
+            padding: 11px 24px;
             background: transparent;
-            color: #984b36;
+            color: var(--primary);
             font: inherit;
             font-weight: 700;
             cursor: pointer;
@@ -238,7 +317,7 @@
         }
 
         .btn-ghost:hover {
-            background: #f6e9dc;
+            background: #fff0f3;
         }
 
         button:disabled {
@@ -246,40 +325,34 @@
             cursor: wait;
         }
 
-        /* كروت الوجبات */
         .product-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
         }
 
         .product {
             position: relative;
-            border: 1px solid rgba(110, 93, 68, .12) !important;
+            border: 1px solid var(--card-border) !important;
             border-radius: 18px !important;
-            padding: 18px 18px 16px;
-            background: #fffdf8 !important;
-            box-shadow: 0 8px 22px rgba(48, 52, 44, .06) !important;
-            transition: transform .3s cubic-bezier(.22, 1, .36, 1), box-shadow .3s, border-color .3s;
-        }
-
-        .product:hover {
-            transform: translateY(-4px);
-            border-color: rgba(184, 84, 60, .3) !important;
-            box-shadow: 0 16px 32px rgba(48, 52, 44, .12) !important;
+            padding: 16px;
+            background: #fff !important;
+            box-shadow: 0 6px 20px rgba(138, 0, 52, 0.04) !important;
+            transition: all .25s ease;
         }
 
         .product h3 {
-            margin: 0 0 6px;
+            margin: 0 0 4px;
             font-size: 17px;
-            color: #3a4c3d;
+            font-weight: 800;
+            color: var(--primary);
         }
 
         .product .price-line {
-            font-size: 20px;
-            font-weight: 800;
-            color: var(--primary);
-            margin: 6px 0 4px;
+            font-size: 19px;
+            font-weight: 900;
+            color: var(--accent);
+            margin: 4px 0 6px;
         }
 
         .product .meta {
@@ -293,52 +366,53 @@
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            padding: 4px 11px;
+            padding: 4px 10px;
             border-radius: 999px;
             font-size: 11.5px;
             font-weight: 700;
         }
 
         .pill.ok {
-            background: #e5efe2;
-            color: #426345;
+            background: #e8f5e9;
+            color: #2e7d32;
         }
 
         .pill.off {
-            background: #f0ece2;
-            color: #8b8574;
+            background: #fbe9e7;
+            color: #d84315;
         }
 
         .pill.qty {
-            background: #f2e8d9;
-            color: #8a5a2a;
+            background: #fff0f3;
+            color: var(--primary);
         }
 
         .pill.date {
-            background: #ede9f5;
-            color: #5d5480;
+            background: #ede7f6;
+            color: #512da8;
         }
 
         .product .desc {
-            color: #7d8277;
-            font-size: 13.5px;
-            margin: 8px 0 12px;
+            color: var(--text-muted);
+            font-size: 13px;
+            margin: 6px 0 10px;
+            line-height: 1.5;
         }
 
         .product .actions {
             display: flex;
             gap: 8px;
-            border-top: 1px dashed #e8e1d4;
+            border-top: 1px dashed var(--card-border);
             padding-top: 12px;
+            margin-top: 10px;
         }
 
         .product .actions button {
             padding: 8px 18px;
-            border-radius: 10px;
-            font-size: 13.5px;
+            border-radius: 999px;
+            font-size: 13px;
         }
 
-        /* كروت الطلبات */
         .order {
             border: 1px solid rgba(93, 111, 82, .13) !important;
             border-radius: 18px !important;
@@ -471,6 +545,68 @@
             font-weight: 700;
             animation: noticePop .4s cubic-bezier(.22, 1, .36, 1);
         }
+        .mother-dashboard-identity {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 7px;
+            width: min(100%, 300px);
+            margin: 8px auto 18px;
+            padding: 18px;
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            background: linear-gradient(145deg, #fff, #fff0f3);
+            box-shadow: 0 8px 22px rgba(138, 0, 52, .08);
+            color: var(--primary);
+            font: inherit;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .mother-dashboard-identity:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(138, 0, 52, .13); }
+        .mother-dashboard-identity:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+        .mother-dashboard-identity strong { font-size: 19px; font-weight: 900; }
+        .mother-dashboard-identity small { color: var(--text-muted); font-weight: 700; }
+        .mother-profile-placeholder {
+            display: grid;
+            place-items: center;
+            width: 112px;
+            height: 112px;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            box-shadow: 0 0 0 3px var(--card-border), 0 8px 22px rgba(138, 0, 52, .18);
+            color: #fff;
+            font-size: 40px;
+            font-weight: 900;
+            object-fit: cover;
+        }
+        .mother-dashboard-identity img {
+            width: 112px;
+            height: 112px;
+            border: 4px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px var(--card-border), 0 8px 22px rgba(138, 0, 52, .18);
+            object-fit: cover;
+        }
+        .earnings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+        .earning-card {
+            min-width: 0;
+            border-radius: 18px;
+            padding: 15px;
+            color: #fff;
+            box-shadow: 0 8px 22px rgba(45, 28, 35, .12);
+        }
+        .earning-card.total { background: linear-gradient(135deg, #8A0034, #C02652); }
+        .earning-card.net { background: linear-gradient(135deg, #2E7D32, #43A047); }
+        .earning-card.due { background: linear-gradient(135deg, #6d28d9, #8b5cf6); }
+        .earning-card .earning-label { font-size: 12px; font-weight: 700; opacity: .9; }
+        .earning-card .earning-value { margin-top: 3px; font-size: clamp(18px, 4vw, 24px); font-weight: 900; overflow-wrap: anywhere; }
+        .earning-card .earning-unit { margin-top: 2px; font-size: 11px; opacity: .8; }
 
         @keyframes noticePop {
             from {
@@ -492,15 +628,23 @@
             .panel {
                 padding: 20px 16px;
             }
-
-            .product-list {
-                grid-template-columns: 1fr;
-            }
+            .dash-tab-btn { min-width: 70px; padding: 9px 10px; font-size: 12px; }
+            .earnings-grid { gap: 7px; }
+            .earning-card { padding: 12px 9px; border-radius: 15px; }
+            .earning-card .earning-label { font-size: 10px; }
         }
+        :root.dark .dash-tabs { border-color: rgba(255, 154, 175, .28); background: linear-gradient(135deg, #431f2c, #311b25 56%, #492331); }
+        :root.dark .dash-tab-btn { color: #e8dde1; }
+        :root.dark .dash-tab-btn.active { background: rgba(255, 154, 175, .14); color: #ff9aaf !important; }
+        :root.dark .mother-profile-placeholder { border-color: #251d21; box-shadow: 0 0 0 3px var(--card-border), 0 8px 22px rgba(0, 0, 0, .28); }
+        :root.dark .mother-dashboard-identity img { border-color: #251d21; box-shadow: 0 0 0 3px var(--card-border), 0 8px 22px rgba(0, 0, 0, .28); }
+        :root.dark .mother-dashboard-identity { background: linear-gradient(145deg, #251d21, #39232b); }
+        [hidden] { display: none !important; }
     </style>
+    <link rel="stylesheet" href="css/app-polish.css">
 </head>
 
-<body>
+<body class="mother-dashboard-page">
     <header>
         <div class="navbar"><a href="index.html" class="logo" aria-label="بيت ماما - الرئيسية"><span
                     class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -508,22 +652,27 @@
                         <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
                         <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg></span><span class="logo-text"><b>بيت ماما</b><small>لوحة الأم الطاهية</small></span></a>
-            <nav><a href="account.html">إعدادات الحساب</a><a href="index.html">المتجر</a><button
-                    onclick="logout()">تسجيل الخروج</button></nav>
+            <nav>
+                <a href="index.html" class="nav-store-btn" style="display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:999px;background:#fff0f3;color:var(--primary);text-decoration:none;font-weight:700;font-size:13px;border:1px solid #ffd1dc;">🏪 المتجر</a>
+                <button onclick="logout()" class="nav-logout-btn" style="padding:8px 16px;border-radius:999px;background:transparent;border:1px solid #e8dfe3;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer;">🚪 تسجيل خروج</button>
+            </nav>
         </div>
     </header>
     <main class="container">
+        <div class="notice" id="notice" role="status" aria-live="polite" hidden></div>
         <div class="page-head">
             <div>
                 <h1>مطبخي 🍳</h1>
                 <p class="page-sub">إدارة وجباتك ومتابعة طلبات عملائك من مكان واحد.</p>
             </div>
-            <span class="welcome-chip" id="welcomeChip" hidden><span class="chip-avatar" id="chipAvatar">م</span><span
-                    id="chipName">أهلاً بك</span></span>
         </div>
-        <div id="notice" class="notice" hidden>🔔</div>
+        <button class="mother-dashboard-identity" type="button" aria-label="تعديل الصورة الشخصية" onclick="switchDashTab('tab-profile', document.querySelectorAll('.dash-tab-btn')[3])">
+            <span class="mother-profile-placeholder" id="motherProfilePlaceholder" aria-hidden="true">م</span>
+            <img id="motherProfilePreview" alt="صورتك الشخصية" hidden>
+            <strong id="motherProfileName">جاري تحميل الاسم...</strong>
+            <small>اضغطي لتعديل صورتك الشخصية</small>
+        </button>
 
-        
         <section class="dash-stats" id="dashStats">
             <div class="dash-stat">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -560,75 +709,126 @@
             </div>
         </section>
 
-        <section class="panel">
-            <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12.55a11 11 0 0 1 14.08 0" />
-                        <path d="M1.42 9a16 16 0 0 1 21.16 0" />
-                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
-                        <circle cx="12" cy="20" r="1" />
-                    </svg></span><span id="formTitle">إضافة وجبة</span></h2>
-            <form id="productForm" onsubmit="saveProduct(event)">
-                <input type="hidden" id="productId">
-                <div class="form-grid">
-                    <label>اسم الوجبة<input id="name" required maxlength="150"></label>
-                    <label>التصنيف<select id="category">
-                            <option value="1">محاشي ومحمر</option>
-                            <option value="2">طواجن ومكرونات</option>
-                            <option value="3">مخبوزات وفطائر</option>
-                            <option value="4">حلويات شرقية</option>
+        <div class="dash-tabs" role="tablist" aria-label="أقسام لوحة الأم">
+            <button class="dash-tab-btn active" type="button" role="tab" aria-selected="true" aria-controls="tab-add" onclick="switchDashTab('tab-add', this)">
+                <span class="tab-icon">🍲</span>إضافة وجبة
+            </button>
+            <button class="dash-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-products" onclick="switchDashTab('tab-products', this)">
+                <span class="tab-icon">📋</span>وجباتي
+            </button>
+            <button class="dash-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-orders" onclick="switchDashTab('tab-orders', this)">
+                <span class="tab-icon">📦</span>الطلبات<span class="count-badge" id="pendingCountTab" style="display:none;font-size:10px;padding:1px 6px;background:var(--accent);color:#fff;border-radius:999px;margin-top:2px;">0</span>
+            </button>
+            <button class="dash-tab-btn" type="button" role="tab" aria-selected="false" aria-controls="tab-profile" onclick="switchDashTab('tab-profile', this)">
+                <span class="tab-icon">👤</span>الصورة
+            </button>
+        </div>
+
+        <div id="tab-add" class="tab-panel active">
+            <section class="panel">
+                <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12.55a11 11 0 0 1 14.08 0" />
+                            <path d="M1.42 9a16 16 0 0 1 21.16 0" />
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0" />
+                            <circle cx="12" cy="20" r="1" />
+                        </svg></span><span id="formTitle">إضافة وجبة</span></h2>
+                <form id="productForm" onsubmit="saveProduct(event)">
+                    <input type="hidden" id="productId">
+                    <label>اسم الوجبة<input id="name" required maxlength="150" placeholder="مثال: طاجن مكرونة بشاميل باللحمة"></label>
+                    <label>التصنيف<select id="category" required>
+                            <option value="">جاري تحميل التصنيفات...</option>
                         </select></label>
-                    <label>السعر بالجنيه<input id="price" type="number" min="0.01" step="0.01" required></label>
-                    <label>الكمية المتاحة<input id="quantity" type="number" min="0" step="1" required></label>
-                    <label>متاحة حتى (اختياري)<input id="availableUntil" type="date"></label>
-                    <label>رابط صورة (اختياري)<input id="imageUrl" type="url" maxlength="250"></label>
+
+                    <div class="inline-two-col">
+                        <label>سعر الأم / الصافي (جنيه)<input id="price" type="number" min="0.01" step="0.01" required placeholder="120"></label>
+                        <label>الكمية المتاحة اليوم<input id="quantity" type="number" min="0" step="1" required placeholder="5"></label>
+                    </div>
+                    <div id="pricingPreview" style="margin:-4px 0 12px;padding:10px 12px;border-radius:12px;background:#fff0f3;border:1px solid #ffd4e1;color:var(--primary);font-weight:800;display:none;">
+                        سعر العميل: <span id="customerPricePreview">0</span> ج.م
+                    </div>
+
+                    <div class="inline-two-col">
+                        <label>وقت التحضير (دقائق)<input id="preparationMinutes" type="number" min="0" max="1440" value="0" placeholder="45"></label>
+                        <label>متاحة حتى (اختياري)<input id="availableUntil" type="date"></label>
+                    </div>
+
+                    <p class="muted">رفع الصور غير متاح في النسخة الحالية.</p>
+                    <input id="imageUrl" type="hidden">
+
+                    <label>وصف الوجبة وطريقتها<textarea id="description" rows="2" maxlength="1000" placeholder="أكتبي وصف شهي للوجبة يجذب الزبائن..."></textarea></label>
+                    <label>المكونات بالتفصيل<textarea id="ingredients" rows="2" maxlength="2000" placeholder="المكونات الطبيعية المستخدمة..."></textarea></label>
+
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;margin:10px 0 16px;">
+                        <label class="check-row"><input id="available" type="checkbox" checked> عرضها للطلب مباشرة</label>
+                        <label class="check-row"><input id="freshlyCooked" type="checkbox"> تُطهى طازجة عند الطلب</label>
+                    </div>
+
+                    <div class="panel-actions">
+                        <button class="btn-main" type="submit">✨ حفظ الوجبة</button>
+                        <button class="btn-ghost" type="button" onclick="resetForm()">إلغاء التعديل</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+
+        <div id="tab-products" class="tab-panel">
+            <section class="panel">
+                <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                        </svg></span>وجباتي الحالية</h2>
+                <label>تصفية حسب التصنيف
+                    <select id="productCategoryFilter" onchange="loadProducts()">
+                        <option value="">كل التصنيفات</option>
+                    </select>
+                </label>
+                <div id="products" class="product-list">جاري التحميل...</div>
+            </section>
+        </div>
+
+        <div id="tab-orders" class="tab-panel">
+            <div class="earnings-grid" aria-label="ملخص الأرباح">
+                <div class="earning-card total">
+                    <div class="earning-label">💰 إجمالي الأرباح</div>
+                    <div class="earning-value" id="statEarnings">0</div>
+                    <div class="earning-unit">جنيه مصري</div>
                 </div>
-                <label>الوصف<textarea id="description" rows="2" maxlength="1000"></textarea></label>
-                <label class="check-row"><input id="available" type="checkbox" checked> عرضها للطلب</label>
-                <div class="panel-actions"><button class="btn-main" type="submit">حفظ الوجبة</button><button
-                        class="btn-ghost" type="button" onclick="resetForm()">إلغاء التعديل</button></div>
-            </form>
-        </section>
+                <div class="earning-card net">
+                    <div class="earning-label">✨ صافي الربح</div>
+                    <div class="earning-value" id="statNetProfit">0</div>
+                    <div class="earning-unit">جنيه مصري</div>
+                </div>
+                <div class="earning-card due">
+                    <div class="earning-label">💸 مستحقات المنصة</div>
+                    <div class="earning-value" id="statPlatformDue">0</div>
+                    <div class="earning-unit">جنيه مصري</div>
+                </div>
+            </div>
 
-        <section class="panel">
-            <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 11h18a8 8 0 0 1-8 8h-2a8 8 0 0 1-8-8Z" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg></span>وجباتي</h2>
-            <div id="products" class="product-list">جاري التحميل...</div>
-        </section>
+            <section class="panel">
+                <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+                    <h2 style="margin:0;font-size:18px;font-weight:900;color:#8A0034;display:flex;align-items:center;gap:8px;">
+                        <span style="font-size:20px;">📦</span> طلبات الزبائن
+                        <span class="count-badge" id="pendingCount" hidden style="background:#E63956;color:#fff;border-radius:999px;padding:2px 8px;font-size:12px;">0</span>
+                    </h2>
+                    <button class="btn-ghost" id="soundToggle" type="button" onclick="enableOrderSound()">🔔 تفعيل صوت الطلبات</button>
+                </div>
+                <div id="orders">جاري التحميل...</div>
+            </section>
+        </div>
 
-        <section class="panel">
-            <h2><span class="h-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
-                        <path d="M3 6h18" />
-                        <path d="M16 10a4 4 0 0 1-8 0" />
-                    </svg></span>الطلبات الجديدة ومتابعتها <span class="count-badge" id="pendingCount" hidden>0</span>
-            </h2>
-            <div id="orders">جاري التحميل...</div>
-        </section>
+        <div id="tab-profile" class="tab-panel">
+            <section class="panel">
+                <h2><span class="h-icon">👤</span> الصورة الشخصية والملف</h2>
+                <p style="color:var(--text-muted);font-size:13.5px;margin-bottom:14px">رفع الصور غير متاح في النسخة الحالية؛ يمكنك تعديل بيانات الملف الشخصي من الإعدادات.</p>
+            </section>
+        </div>
     </main>
-    <script>
-        const statusLabels = { pending: 'جديد', confirmed: 'تم القبول', preparing: 'قيد التجهيز', ready: 'جاهز', completed: 'مكتمل', rejected: 'مرفوض', cancelled: 'ملغي' };
-        let previousPending = -1;
-        async function requireRole() {
-            const r = await fetch('/api/me'); if (!r.ok) { location.href = 'login.html'; return false } const d = await r.json(); if (d.user.role !== 'MOTHER') { location.href = d.user.role === 'ADMIN' ? 'admin-dashboard.html' : 'index.html'; return false }
-            const chip = document.getElementById('welcomeChip'); chip.hidden = false; document.getElementById('chipName').textContent = 'أهلاً ' + d.user.name + ' 👋'; document.getElementById('chipAvatar').textContent = (d.user.name || 'م').trim().charAt(0); return true
-        }
-        async function loadProducts() { const r = await fetch('/api/products'); if (!r.ok) throw Error('تعذر تحميل الوجبات'); const list = await r.json(); const box = document.getElementById('products'); box.replaceChildren(); document.getElementById('statProducts').textContent = list.length; document.getElementById('statStock').textContent = list.reduce((s, p) => s + p.quantity, 0); if (!list.length) { box.innerHTML = '<div class="empty-state"><span class="big">🍽️</span>لم تضيفي وجبات بعد — ابدئي من النموذج بالأعلى.</div>'; return } list.forEach(p => { const card = document.createElement('article'); card.className = 'product'; const heading = document.createElement('h3'); heading.textContent = p.name; const price = document.createElement('p'); price.className = 'price-line'; price.textContent = p.price + ' ج.م'; const meta = document.createElement('div'); meta.className = 'meta'; const avail = document.createElement('span'); avail.className = 'pill ' + (p.available ? 'ok' : 'off'); avail.textContent = p.available ? 'معروضة' : 'مخفية'; const qty = document.createElement('span'); qty.className = 'pill qty'; qty.textContent = 'الكمية ' + p.quantity; meta.append(avail, qty); if (p.availableUntil) { const d = document.createElement('span'); d.className = 'pill date'; d.textContent = 'حتى ' + p.availableUntil; meta.append(d) } const desc = document.createElement('p'); desc.className = 'desc'; desc.textContent = p.description || ''; const actions = document.createElement('div'); actions.className = 'actions'; const edit = document.createElement('button'); edit.className = 'btn-main'; edit.textContent = 'تعديل'; edit.onclick = () => editProduct(p); const del = document.createElement('button'); del.className = 'btn-ghost'; del.textContent = 'حذف'; del.onclick = () => deleteProduct(p.id); actions.append(edit, del); card.append(heading, price, meta, desc, actions); box.append(card) }) }
-        function editProduct(p) { document.getElementById('productId').value = p.id; document.getElementById('name').value = p.name; document.getElementById('category').value = p.categoryId; document.getElementById('price').value = p.price; document.getElementById('quantity').value = p.quantity; document.getElementById('availableUntil').value = p.availableUntil || ''; document.getElementById('imageUrl').value = p.imageUrl || ''; document.getElementById('description').value = p.description || ''; document.getElementById('available').checked = p.available; document.getElementById('formTitle').textContent = 'تعديل وجبة'; window.scrollTo({ top: 0, behavior: 'smooth' }) }
-        function resetForm() { document.getElementById('productForm').reset(); document.getElementById('productId').value = ''; document.getElementById('available').checked = true; document.getElementById('formTitle').textContent = 'إضافة وجبة' }
-        async function saveProduct(e) { e.preventDefault(); const id = document.getElementById('productId').value; const payload = new URLSearchParams({ id, category_id: document.getElementById('category').value, name: document.getElementById('name').value.trim(), price: document.getElementById('price').value, quantity: document.getElementById('quantity').value, available_until: document.getElementById('availableUntil').value, image_url: document.getElementById('imageUrl').value.trim(), description: document.getElementById('description').value.trim(), available: String(document.getElementById('available').checked) }); const response = await fetch('/api/products', { method: id ? 'PUT' : 'POST', body: payload }); const result = await response.json(); if (!response.ok || !result.success) { alert(result.message || 'تعذر حفظ الوجبة'); return } resetForm(); await loadProducts() }
-        async function deleteProduct(id) { if (!confirm('ستُخفى الوجبة عن المتجر مع الحفاظ على سجل الطلبات. متابعة؟')) return; const r = await fetch('/api/products', { method: 'DELETE', body: new URLSearchParams({ id }) }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر إخفاء الوجبة'); return } loadProducts() }
-        function nextAction(status) { return { pending: ['confirmed', 'قبول'], confirmed: ['preparing', 'بدء التجهيز'], preparing: ['ready', 'إعلان الجاهزية'], ready: ['completed', 'إتمام الطلب'] }[status] }
-        async function loadOrders() { const response = await fetch('/api/orders'); if (!response.ok) throw Error('تعذر تحميل الطلبات'); const list = await response.json(); const pending = list.filter(o => o.status === 'pending').length; document.getElementById('statOrders').textContent = list.length; const badge = document.getElementById('pendingCount'); document.getElementById('statPending').textContent = pending; if (pending) { badge.hidden = false; badge.textContent = pending } else badge.hidden = true; if (previousPending >= 0 && pending > previousPending) { const notice = document.getElementById('notice'); notice.hidden = false; notice.textContent = `لديك ${pending - previousPending} طلب جديد — راجعيه تحت 👇` } previousPending = pending; const box = document.getElementById('orders'); box.replaceChildren(); if (!list.length) { box.innerHTML = '<div class="empty-state"><span class="big">🧺</span>لا توجد طلبات حتى الآن — هنشتغل لما يوصلك أول طلب!</div>'; return } list.forEach(o => { const card = document.createElement('article'); card.className = 'order'; const head = document.createElement('div'); head.className = 'order-head'; const title = document.createElement('h3'); title.textContent = 'طلب #' + o.id; const badge = document.createElement('span'); badge.className = 'status-badge status-' + o.status; badge.textContent = statusLabels[o.status] || o.status; head.append(title, badge); const details = document.createElement('p'); details.className = 'details'; details.textContent = `العميل: ${o.customerName} (${o.customerPhone}) — ${o.total} ج.م — الموعد: ${o.pickupTime}`; const contact = document.createElement('p'); contact.className = 'details'; contact.textContent = `التواصل عبر: ${o.contactMethod === 'whatsapp' ? 'واتساب' : 'مكالمة هاتفية'} — الدفع: ${o.paymentMethod === 'cash_on_delivery' ? 'نقداً عند التوصيل' : 'نقداً عند الاستلام'}`; const method = document.createElement('p'); method.className = 'details'; method.textContent = o.deliveryMethod === 'delivery' ? `توصيل إلى: ${o.deliveryAddress || 'غير محدد'} (الاتفاق على الرسوم مباشرة)` : `استلام من المطبخ: ${o.sellerAddress || 'العنوان غير محدد'}`; const items = document.createElement('p'); items.className = 'items-line'; items.textContent = (o.items || []).map(i => `${i.name} × ${i.quantity}`).join('، '); card.append(head, details, contact, method, items); const next = nextAction(o.status); if (next) { const action = document.createElement('button'); action.className = 'btn-main'; action.textContent = next[1]; action.onclick = () => updateStatus(o.id, next[0]); card.append(action) } if (o.status === 'pending') { const reject = document.createElement('button'); reject.className = 'btn-ghost'; reject.textContent = 'رفض الطلب'; reject.onclick = () => updateStatus(o.id, 'rejected'); card.append(reject) } box.append(card) }) }
-        async function updateStatus(id, status) { const r = await fetch('/api/orders/status', { method: 'POST', body: new URLSearchParams({ order_id: id, status }) }); const d = await r.json(); if (!r.ok || !d.success) { alert(d.message || 'تعذر تحديث الطلب'); return } await loadOrders() }
-        async function logout() { await fetch('/api/logout', { method: 'POST' }); localStorage.removeItem('user'); location.href = 'index.html' }
-        async function refresh() { try { await Promise.all([loadProducts(), loadOrders()]) } catch (e) { const n = document.getElementById('notice'); n.hidden = false; n.textContent = e.message } }
-        (async () => { if (await requireRole()) { await refresh(); setInterval(loadOrders, 15000) } })();
-    </script>
+    <script src="js/mother-dashboard.js"></script>
+    <custom-dock-bottom-bar selected-index="3"></custom-dock-bottom-bar>
+    <script src="js/custom-dock-bottom-bar.js"></script>
 </body>
 
 </html>

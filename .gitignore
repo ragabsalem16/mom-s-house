@@ -5,6 +5,13 @@
 /bin/
 /data/
 /db/*.db
+/web/uploads/
+/service-account*.json
+/firebase-service-account.json
+/beit_mama.db
+/beit_mama.db-journal
+/beit_mama.db-shm
+/beit_mama.db-wal
 *.jks
 .DS_Store
 android/.gradle/

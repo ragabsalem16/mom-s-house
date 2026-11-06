@@ -7,13 +7,14 @@ services:
       BEITMAMA_HEADLESS: "true"
       BEITMAMA_PRODUCTION: "true"
       BEITMAMA_ADMIN_PASSWORD: ${BEITMAMA_ADMIN_PASSWORD:?Set a unique admin password in .env}
-      BEITMAMA_SQLITE_PATH: /data/beit_mama.db
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:?Set FIREBASE_PROJECT_ID in .env}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/firebase-service-account.json
       BEITMAMA_PUBLIC_URL: ${BEITMAMA_PUBLIC_URL:?Set the public HTTPS URL in .env}
       BEITMAMA_SECURE_COOKIES: "true"
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
     volumes:
-      - beit_mama_data:/data
+      - ./firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
 
   caddy:
     image: caddy:2-alpine
@@ -32,6 +33,5 @@ services:
       - caddy_config:/config
 
 volumes:
-  beit_mama_data:
   caddy_data:
   caddy_config:

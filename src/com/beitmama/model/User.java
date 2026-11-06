@@ -7,8 +7,10 @@ public class User {
     private String name;
     private String email;
     private String phone;
+    private String alternatePhone;
     private String address;
     private String preferredContact;
+    private String profileImageUrl;
     private String passwordHash;
     private String salt;
     private String role; 
@@ -17,12 +19,13 @@ public class User {
 
     public User() {}
 
-    public User(int id, String name, String email, String phone, String address, String preferredContact,
+    public User(int id, String name, String email, String phone, String alternatePhone, String address, String preferredContact,
                 String passwordHash, String salt, String role, String status, Timestamp createdAt) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.alternatePhone = alternatePhone;
         this.address = address;
         this.preferredContact = preferredContact;
         this.passwordHash = passwordHash;
@@ -44,11 +47,17 @@ public class User {
     public String getPhone() { return phone; }
     public void setPhone(String phone) { this.phone = phone; }
 
+    public String getAlternatePhone() { return alternatePhone; }
+    public void setAlternatePhone(String alternatePhone) { this.alternatePhone = alternatePhone; }
+
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
 
     public String getPreferredContact() { return preferredContact; }
     public void setPreferredContact(String preferredContact) { this.preferredContact = preferredContact; }
+
+    public String getProfileImageUrl() { return profileImageUrl; }
+    public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
 
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }

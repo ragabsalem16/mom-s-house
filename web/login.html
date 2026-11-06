@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="js/api-client.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>الدخول أو إنشاء حساب | بيت ماما</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/customer-shell.css">
     <style>
         :root {
-            --brand-pink: #c2185b;
-            --brand-pink-dark: #9c1048;
-            --brand-pink-light: #fce4ec;
-            --brand-green: #2e7d32;
-            --text-main: #212121;
-            --text-sub: #666666;
-            --bg-page: #fbf9f8;
-            --card-border: #f0e6e6;
+            --brand-pink: #8A0034;
+            --brand-pink-dark: #700028;
+            --brand-pink-light: #FFF0F3;
+            --brand-rose: #E63956;
+            --brand-green: #2F9E44;
+            --text-main: #20181B;
+            --text-sub: #756A6E;
+            --bg-page: #FAF7F8;
+            --card-border: #F3E7EB;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; line-height: 1.5; }
 
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #f2eaea;
+            background: rgba(253, 251, 251, 0.94);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--card-border);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -62,7 +66,6 @@
         }
         .nav-links a:hover, .nav-links a.active { color: var(--brand-pink); }
 
-        /* Login Box Card */
         .box {
             max-width: 440px;
             margin: 50px auto 60px;
@@ -70,7 +73,7 @@
             padding: 38px 32px;
             border-radius: 24px;
             border: 1px solid var(--card-border);
-            box-shadow: 0 12px 35px rgba(194, 24, 91, 0.05);
+            box-shadow: 0 12px 35px rgba(138, 0, 52, 0.06);
         }
         h1 {
             text-align: center;
@@ -83,7 +86,7 @@
             display: flex;
             gap: 8px;
             margin-bottom: 22px;
-            background: #fdf2f5;
+            background: var(--brand-pink-light);
             padding: 5px;
             border-radius: 999px;
         }
@@ -102,37 +105,37 @@
         .tabs button.active {
             background: var(--brand-pink);
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(194, 24, 91, 0.25);
+            box-shadow: 0 4px 12px rgba(138, 0, 52, 0.25);
         }
 
         label {
             display: block;
             font-weight: 700;
             margin: 14px 0 6px;
-            color: #333;
+            color: var(--text-main);
             font-size: 13.5px;
         }
         input {
             width: 100%;
             padding: 11px 14px;
-            border: 1.5px solid #dedede;
+            border: 1.5px solid var(--card-border);
             border-radius: 12px;
             font-size: 14px;
             background: #fafafa;
-            color: #222;
+            color: var(--text-main);
             transition: 0.2s;
         }
         input:focus {
-            border-color: var(--brand-pink);
+            border-color: var(--brand-rose);
             background: #fff;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.12);
+            box-shadow: 0 0 0 3px rgba(230, 57, 86, 0.15);
         }
 
         button.btn-primary {
             width: 100%;
             margin-top: 20px;
-            background: var(--brand-pink);
+            background: linear-gradient(135deg, #8A0034 0%, #A61B4B 50%, #E63956 100%);
             color: #fff;
             border: 0;
             border-radius: 999px;
@@ -140,12 +143,13 @@
             font-size: 15px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 6px 18px rgba(194, 24, 91, 0.25);
+            box-shadow: 0 6px 18px rgba(138, 0, 52, 0.24);
             transition: all 0.2s;
         }
         button.btn-primary:hover {
-            background: var(--brand-pink-dark);
             transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(138, 0, 52, 0.32);
+            filter: brightness(1.06);
         }
 
         .or-divider {
@@ -204,31 +208,11 @@
         }
         .footer a:hover { text-decoration: underline; }
     </style>
+    <link rel="stylesheet" href="css/app-polish.css">
 </head>
 <body>
 
-    <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">
-                <span class="logo-badge">
-                    <svg viewBox="0 0 40 40" fill="none">
-                        <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
-                    </svg>
-                </span>
-                <span class="logo-title">بيت ماما</span>
-            </a>
-
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="index.html#foods">الطلبات</a></li>
-                    <li><a href="join.html">تسجيل الأمهات</a></li>
-                    <li><a href="login.html" class="active">تسجيل الدخول</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    <beit-mama-header></beit-mama-header>
 
     <main class="box">
         <h1>أهلاً بك في بيت ماما</h1>
@@ -303,7 +287,7 @@
                 if (data.success) {
                     if (data.user.role === 'ADMIN') location.href = 'admin-dashboard.html';
                     else if (data.user.role === 'MOTHER') location.href = 'mother-dashboard.html';
-                    else location.href = 'index.html';
+                    else location.href = 'profile.html';
                 } else {
                     msg.textContent = data.message || 'خطأ في بيانات الدخول';
                 }
@@ -325,11 +309,11 @@
             });
 
             try {
-                const res = await fetch('/api/register', { method: 'POST', body: payload });
+                const res = await fetch('/api/register/customer', { method: 'POST', body: payload });
                 const data = await res.json();
                 if (data.success) {
-                    alert('تم إنشاء حسابك بنجاح! جاري تحويلك...');
-                    location.href = 'index.html';
+                    alert('تم إنشاء حسابك بنجاح! سجّل الدخول لاستكمال بيانات العنوان ورقم الهاتف الإضافي.');
+                    location.href = 'login.html';
                 } else {
                     msg.textContent = data.message || 'خطأ في إنشاء الحساب';
                 }
@@ -338,5 +322,7 @@
             }
         }
     </script>
+    <custom-dock-bottom-bar selected-index="3"></custom-dock-bottom-bar>
+    <script src="js/custom-dock-bottom-bar.js"></script>
 </body>
 </html>

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: beit-mama
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/categories
+    envVars:
+      - key: FIREBASE_PROJECT_ID
+        value: beitmama
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/secrets/firebase-service-account.json
+      - key: BEITMAMA_PRODUCTION
+        value: "true"
+      - key: BEITMAMA_HEADLESS
+        value: "true"
+      - key: BEITMAMA_SECURE_COOKIES
+        value: "true"
+      - key: BEITMAMA_ADMIN_PASSWORD
+        sync: false

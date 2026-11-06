@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="js/api-client.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>لوحة المتابعة العامة | بيت ماما</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/customer-shell.css">
     <style>
         :root {
             --sidebar-bg: #0d2818;
@@ -42,7 +44,6 @@
             direction: rtl;
         }
 
-        /* ================= SIDEBAR ================= */
         aside.sidebar {
             width: 270px;
             background-color: var(--sidebar-bg);
@@ -178,7 +179,6 @@
             display: inline-block;
         }
 
-        /* ================= MAIN CONTENT ================= */
         main.main-viewport {
             flex-grow: 1;
             display: flex;
@@ -187,7 +187,6 @@
             background: #f8fafc;
         }
 
-        /* Top Header */
         header.top-navbar {
             background: #ffffff;
             height: 72px;
@@ -260,6 +259,135 @@
             box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1);
         }
 
+        /* Search Results Dropdown */
+        .search-results-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 12px 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+        .search-results-dropdown.show { display: block; }
+        .search-result-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.2s;
+        }
+        .search-result-item:hover { background: #f8fafc; }
+        .search-result-item .user-info { display: flex; flex-direction: column; }
+        .search-result-item .user-name { font-weight: 700; font-size: 13px; color: #0f172a; }
+        .search-result-item .user-meta { font-size: 11px; color: var(--text-muted); }
+        .search-result-item .role-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .dot-MOTHER { background: #15803d; }
+        .dot-CUSTOMER { background: #1e40af; }
+        .dot-ADMIN { background: #b45309; }
+
+        /* Global Search Modal */
+        .search-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .search-modal-overlay.show { display: flex; }
+        .search-modal-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: modalSlideUp 0.3s ease;
+        }
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .search-modal-header {
+            background: var(--sidebar-bg);
+            color: #fff;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .search-modal-header h3 { font-size: 18px; font-weight: 800; }
+        .search-modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .search-modal-body { padding: 24px; }
+        .user-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .user-detail-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .user-detail-item label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .user-detail-item span {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+        .user-detail-full {
+            grid-column: span 2;
+        }
+        .user-role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .role-MOTHER { background: #dcfce7; color: #166534; }
+        .role-CUSTOMER { background: #eff6ff; color: #1e40af; }
+        .role-ADMIN { background: #fef3c7; color: #92400e; }
+
+        @media (max-width: 640px) {
+            .user-detail-grid { grid-template-columns: 1fr; }
+            .user-detail-full { grid-column: span 1; }
+        }
+
+
         .search-container-top .search-icon {
             position: absolute;
             right: 14px;
@@ -285,7 +413,6 @@
             transition: all 0.2s;
         }
 
-        /* Container Body */
         .content-scroll-area {
             padding: 30px 36px 40px;
             display: flex;
@@ -293,7 +420,6 @@
             gap: 24px;
         }
 
-        /* Page Head Titles & Banner Row */
         .page-banner-row {
             display: flex;
             align-items: center;
@@ -327,7 +453,6 @@
             margin-top: 4px;
         }
 
-        /* Promo Banner Card */
         .promo-banner-card {
             background: linear-gradient(135deg, #fff7ed, #fef3c7);
             border: 1px solid #fed7aa;
@@ -362,7 +487,6 @@
             font-weight: 700;
         }
 
-        /* 4 TOP STAT CARDS */
         .stat-cards-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -435,7 +559,164 @@
         .card-active-mothers { background: #f8fafc; border-color: #e2e8f0; }
         .card-active-mothers .stat-circle-icon { background: #e0f2fe; color: #0284c7; }
 
-        /* TAB VIEWS */
+        .dues-summary-card {
+            background: linear-gradient(135deg, rgba(254, 242, 242, 0.9), rgba(255, 255, 255, 1));
+            border: 1px solid #fecdd3;
+            border-radius: 20px;
+            padding: 18px 20px;
+            box-shadow: 0 10px 26px rgba(190, 24, 93, 0.07);
+            margin-top: 16px;
+        }
+
+        .dues-summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .dues-summary-header .dues-kicker {
+            color: #9f1239;
+            font-size: 12px;
+            font-weight: 800;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .dues-summary-header h3 {
+            font-size: 32px;
+            font-weight: 900;
+            color: #7f1d1d;
+            line-height: 1;
+        }
+
+        .dues-status-badge {
+            background: rgba(127, 29, 29, 0.08);
+            border: 1px solid rgba(127, 29, 29, 0.18);
+            color: #7f1d1d;
+            border-radius: 999px;
+            padding: 6px 12px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .dues-search-box {
+            margin-top: 16px;
+        }
+
+        .dues-search-box input {
+            width: 100%;
+            border: 1px solid #fecdd3;
+            background: #fff;
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .dues-search-box input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.12);
+            border-color: #fb7185;
+        }
+
+        .dues-list {
+            display: grid;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .due-item {
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid #fbcfe8;
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .due-item strong {
+            color: #1f2937;
+            font-size: 14px;
+        }
+
+        .due-item small {
+            color: #475569;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .due-amount {
+            color: #7f1d1d;
+            font-weight: 900;
+            font-size: 15px;
+        }
+
+        .mothers-finance-shell {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .finance-stat-chip {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 18px 16px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+        }
+
+        .finance-stat-chip .value {
+            font-size: 28px;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .finance-stat-chip .label {
+            display: block;
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .finance-list-card {
+            background: #fff;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            padding: 18px 16px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.03);
+        }
+
+        .finance-list-card h3 {
+            font-size: 17px;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .list-compact {
+            display: grid;
+            gap: 8px;
+        }
+
+        .list-item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+
         .tab-section {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -450,7 +731,25 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 2-COLUMN LOWER SECTION */
+        @media (max-width: 768px) {
+            .content-scroll-area {
+                padding: 18px 14px 28px;
+            }
+
+            .stat-cards-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .dashboard-lower-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mothers-finance-shell {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .dashboard-lower-grid {
             display: grid;
             grid-template-columns: 1fr 1.35fr;
@@ -637,7 +936,6 @@
         .pill-processing { background: #fefce8; color: #854d0e; border: 1px solid #fef08a; }
         .pill-rejected { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 
-        /* ================= DATA TABLES & LISTS ================= */
         .data-panel-card {
             background: #ffffff;
             border-radius: 20px;
@@ -719,7 +1017,6 @@
         .btn-red-sm { background: #dc2626; color: #fff; }
         .btn-red-sm:hover { background: #b91c1c; }
 
-        /* Create Invite Form */
         .invite-form-box {
             background: #f8fafc;
             border: 1px solid var(--border-color);
@@ -760,7 +1057,6 @@
 
         .invite-form-box button:hover { background: #166534; }
 
-        /* ================= RESPONSIVE (كل الشاشات) ================= */
         .menu-toggle-btn {
             display: none;
             background: #f1f5f9;
@@ -782,7 +1078,6 @@
             z-index: 90;
         }
 
-        /* شاشات متوسطة: لابتوب صغير / تابلت أفقي */
         @media (max-width: 1100px) {
             aside.sidebar { width: 232px; padding: 20px 12px 16px; }
             .content-scroll-area { padding: 24px 22px 36px; }
@@ -791,7 +1086,6 @@
             .search-container-top { width: 220px; }
         }
 
-        /* تابلت وموبايل كبير: السايدبار يختفي ويسيب مكان لزر القائمة */
         @media (max-width: 900px) {
             aside.sidebar {
                 position: fixed;
@@ -808,7 +1102,6 @@
             .header-profile-block .user-greeting-text span { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         }
 
-        /* موبايل */
         @media (max-width: 640px) {
             .content-scroll-area { padding: 18px 14px 32px; }
             .stat-cards-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -817,7 +1110,6 @@
             .stat-circle-icon { width: 42px; height: 42px; }
             .stat-circle-icon svg { width: 20px; height: 20px; }
             .status-pills-row { grid-template-columns: repeat(2, 1fr); }
-            .search-container-top { display: none; }
             .page-title-group h1 { font-size: 20px; }
             .promo-banner-card { width: 100%; }
             .data-panel-card { padding: 16px 12px; }
@@ -832,7 +1124,6 @@
             .status-pills-row { grid-template-columns: 1fr 1fr; }
         }
 
-        /* Footer Copyright */
         footer.admin-page-footer {
             margin-top: 30px;
             padding-top: 20px;
@@ -846,9 +1137,11 @@
             gap: 6px;
         }
     </style>
+    <link rel="stylesheet" href="css/app-polish.css">
+    <script src="js/theme.js"></script>
 </head>
 
-<body>
+<body class="admin-dashboard-page">
     
     <aside class="sidebar">
         <div class="brand-logo-area">
@@ -915,9 +1208,11 @@
                     <span class="search-icon">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                     </span>
-                    <input type="text" placeholder="ابحث في النظام، الطلبات، الأمهات...">
+                    <input type="text" id="globalSearchInput" placeholder="ابحث في النظام، الطلبات، الأمهات..." oninput="handleGlobalSearch(this.value)">
+                    <div class="search-results-dropdown" id="searchResultsDropdown"></div>
                 </div>
 
+                <button class="admin-theme-toggle" type="button" aria-label="تفعيل الوضع الليلي" aria-pressed="false" onclick="toggleAdminTheme()">🌙</button>
                 <div class="notif-bell-btn">
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                         <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
@@ -1000,6 +1295,20 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 13.87A4 4 0 0 1 7.41 6a5.11 5.11 0 0 1 1.05-1.54 5 5 0 0 1 7.08 0A5.11 5.11 0 0 1 16.59 6 4 4 0 0 1 18 13.87V21H6Z"/><line x1="6" y1="17" x2="18" y2="17"/></svg>
                         </div>
                     </div>
+                </div>
+
+                <div class="dues-summary-card">
+                    <div class="dues-summary-header">
+                        <div>
+                            <span class="dues-kicker">الفلوس المستحقة عند الأمهات</span>
+                            <h3 id="totalMotherDues">0.00 ج.م</h3>
+                        </div>
+                        <span class="dues-status-badge">قيد التحصيل</span>
+                    </div>
+                    <div class="dues-search-box">
+                        <input id="motherDueSearchInput" type="text" placeholder="ابحث برقم هاتف الأم أو اسمها ...">
+                    </div>
+                    <div class="dues-list" id="motherDuesList"></div>
                 </div>
 
                 
@@ -1108,7 +1417,29 @@
                         <button class="btn-review-orders-now" onclick="loadMothersData()">🔄 تحديث الأمهات</button>
                     </div>
 
-                    <div class="table-responsive">
+                    <div class="mothers-finance-shell">
+                        <div class="finance-stat-chip">
+                            <span class="value" id="registeredMothersCount">0</span>
+                            <span class="label">إجمالي الأمهات المسجلات</span>
+                        </div>
+                        <div class="finance-stat-chip">
+                            <span class="value" id="registeredMotherDueTotal">0.00 ج.م</span>
+                            <span class="label">الفلوس المستحقة عند الأم</span>
+                        </div>
+                    </div>
+
+                    <div class="mothers-finance-shell" style="margin-top:16px;">
+                        <div class="finance-list-card">
+                            <h3>الأمهات التي لم تسدد</h3>
+                            <div id="overdueMothersList" class="list-compact"></div>
+                        </div>
+                        <div class="finance-list-card">
+                            <h3>مستحقات اليوم</h3>
+                            <div id="todayDueMothersList" class="list-compact"></div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive" style="margin-top:16px;">
                         <table class="modern-table">
                             <thead>
                                 <tr>
@@ -1116,12 +1447,13 @@
                                     <th>الاسم</th>
                                     <th>البريد الإلكتروني</th>
                                     <th>رقم الهاتف</th>
+                                    <th>الفلوس المستحقة عند الأم</th>
                                     <th>حالة الاعتماد</th>
                                     <th>الإجراءات</th>
                                 </tr>
                             </thead>
                             <tbody id="mothersTableBody">
-                                <tr><td colspan="6" style="text-align:center;padding:24px;">جاري تحميل الأمهات...</td></tr>
+                                <tr><td colspan="7" style="text-align:center;padding:24px;">جاري تحميل الأمهات...</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -1202,6 +1534,20 @@
         </div>
     </main>
 
+    <div class="search-modal-overlay" id="globalSearchModal" onclick="closeSearchModal(event)">
+        <div class="search-modal-card" onclick="event.stopPropagation()">
+            <div class="search-modal-header">
+                <h3>بيانات المستخدم</h3>
+                <button class="search-modal-close" onclick="closeSearchModal()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div class="search-modal-body" id="searchModalBody">
+                <!-- Data will be injected here -->
+            </div>
+        </div>
+    </div>
+
     <script>
         const statusMap = {
             pending: { text: 'قيد الانتظار', class: 'badge-pending' },
@@ -1225,7 +1571,6 @@
             if (targetSection) targetSection.classList.add('active');
             if (targetNav) targetNav.classList.add('active');
 
-            // على الشاشات الصغيرة: اقفل السايدبار بعد اختيار صفحة
             const sidebar = document.querySelector('aside.sidebar');
             if (sidebar && sidebar.classList.contains('open')) toggleSidebar();
 
@@ -1244,11 +1589,121 @@
             }
         }
 
+        function syncAdminThemeButton() {
+            const button = document.querySelector('.admin-theme-toggle');
+            if (!button) return;
+            const dark = document.documentElement.classList.contains('dark');
+            button.textContent = dark ? '☀️' : '🌙';
+            button.setAttribute('aria-label', dark ? 'تفعيل الوضع النهاري' : 'تفعيل الوضع الليلي');
+            button.setAttribute('aria-pressed', String(dark));
+            button.title = dark ? 'تفعيل الوضع النهاري' : 'تفعيل الوضع الليلي';
+        }
+
+        function toggleAdminTheme() {
+            const dark = document.documentElement.classList.toggle('dark');
+            try {
+                localStorage.setItem('beitMamaTheme', dark ? 'dark' : 'light');
+            } catch (error) {
+                console.warn('تعذر حفظ تفضيل المظهر على هذا الجهاز.', error);
+            }
+            syncAdminThemeButton();
+        }
+
+        function formatCurrency(value) {
+            const amount = Number(value || 0);
+            if (!Number.isFinite(amount)) return '0.00 ج.م';
+            return `${amount.toLocaleString('ar-EG', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ج.م`;
+        }
+
+        function calculateDueFromGross(grossAmount) {
+            const amount = Number(grossAmount || 0);
+            return Number((amount - (amount / 1.25)).toFixed(2));
+        }
+
+        function buildMotherDueMap(orders) {
+            const dueMap = new Map();
+            for (const order of orders || []) {
+                const status = (order && order.status) || '';
+                if (!status || ['rejected', 'cancelled'].includes(status)) continue;
+                const sellerId = Number(order.sellerId ?? order.seller_id ?? 0);
+                const gross = Number(order.totalAmount ?? order.total ?? 0);
+                if (!sellerId || gross <= 0) continue;
+                dueMap.set(sellerId, (dueMap.get(sellerId) || 0) + calculateDueFromGross(gross));
+            }
+            return dueMap;
+        }
+
+        function renderDueList(targetId, items, query) {
+            const host = document.getElementById(targetId);
+            if (!host) return;
+            const normalizedQuery = (query || '').trim();
+            const filtered = (items || []).filter(item => {
+                if (!normalizedQuery) return true;
+                const term = `${item.name || ''} ${item.phone || ''}`.toLowerCase();
+                return term.includes(normalizedQuery.toLowerCase());
+            });
+            if (!filtered.length) {
+                host.innerHTML = '<div class="list-item-row"><span>لا توجد مستحقات متاحة</span></div>';
+                return;
+            }
+            host.innerHTML = filtered.map(item => `
+                <div class="list-item-row">
+                    <div>
+                        <strong>${item.name || 'أم غير مسجلة'}</strong>
+                        <small>${item.phone || '—'} • متبقي ${item.daysRemaining ?? 7} يوم</small>
+                    </div>
+                    <span class="due-amount">${formatCurrency(item.amountDue)}</span>
+                </div>
+            `).join('');
+        }
+
+        function buildMotherDueRows(mothers, orders) {
+            const dueMap = buildMotherDueMap(orders || []);
+            return (mothers || []).map(mother => {
+                const motherId = Number(mother.id ?? 0);
+                const amountDue = Number(dueMap.get(motherId) || 0);
+                const cycleValue = Math.max(0, (new Date().getDate() + motherId) % 7);
+                return {
+                    id: motherId,
+                    name: mother.name || 'أم غير مسجلة',
+                    phone: mother.phone || '—',
+                    amountDue,
+                    daysRemaining: amountDue > 0 ? Math.max(0, 7 - cycleValue) : 0,
+                    approval: mother.approval || 'PENDING'
+                };
+            }).filter(item => item.amountDue > 0 || item.name).sort((a, b) => b.amountDue - a.amountDue);
+        }
+
+        function refreshMotherDuePanels(mothers, orders) {
+            const dueRows = buildMotherDueRows(mothers, orders);
+            const totalDue = dueRows.reduce((sum, item) => sum + item.amountDue, 0);
+            const searchInput = document.getElementById('motherDueSearchInput');
+            const query = searchInput ? searchInput.value : '';
+
+            const totalMotherDues = document.getElementById('totalMotherDues');
+            if (totalMotherDues) totalMotherDues.textContent = formatCurrency(totalDue);
+
+            const registeredMothersCount = document.getElementById('registeredMothersCount');
+            if (registeredMothersCount) registeredMothersCount.textContent = String(mothers.length || 0);
+
+            const registeredMotherDueTotal = document.getElementById('registeredMotherDueTotal');
+            if (registeredMotherDueTotal) registeredMotherDueTotal.textContent = formatCurrency(totalDue);
+
+            renderDueList('motherDuesList', dueRows, query);
+            renderDueList('overdueMothersList', dueRows.filter(item => item.amountDue > 0 && item.daysRemaining <= 0), query);
+            renderDueList('todayDueMothersList', dueRows.filter(item => item.amountDue > 0 && item.daysRemaining <= 1), query);
+        }
+
         async function initDashboard() {
             try {
                 const r = await fetch('/api/admin/stats');
+                if (r.status === 401 || r.status === 403) {
+                    location.replace('login.html');
+                    return;
+                }
                 if (r.ok) {
-                    const s = await r.json();
+                    const response = await r.json();
+                    const s = typeof response === 'string' ? JSON.parse(response) : response;
                     document.getElementById('statRevenue').textContent = (s.orders_revenue || s.revenue || '0.00') + ' ج.م';
                     document.getElementById('statPendingOrders').textContent = s.pending || 0;
                     document.getElementById('statTotalUsers').textContent = (s.customers || 0) + (s.mothers || 0);
@@ -1270,6 +1725,7 @@
                 }
 
                 loadRecentActivities();
+                loadMothersData();
             } catch (err) {
                 console.error("Dashboard init error:", err);
             }
@@ -1347,6 +1803,7 @@
             });
             if (r.ok) {
                 loadOrdersData();
+                syncAdminThemeButton();
                 initDashboard();
             } else {
                 alert('تعذر تحديث حالة الطلب');
@@ -1355,24 +1812,36 @@
 
         async function loadMothersData() {
             const tbody = document.getElementById('mothersTableBody');
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:20px;">جاري تحميل الأمهات...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:20px;">جاري تحميل الأمهات...</td></tr>';
             try {
-                const r = await fetch('/api/admin/mothers');
-                if (!r.ok) throw new Error('خطأ في الاتصال');
-                const mothers = await r.json();
+                const [mothersResponse, ordersResponse] = await Promise.all([
+                    fetch('/api/admin/mothers'),
+                    fetch('/api/orders')
+                ]);
+                if (!mothersResponse.ok) throw new Error('خطأ في الاتصال');
+                const mothers = await mothersResponse.json();
+                const orders = ordersResponse.ok ? await ordersResponse.json() : [];
+
                 if (mothers.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:#94a3b8;">لا توجد حسابات أمهات مسجلة</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8;">لا توجد حسابات أمهات مسجلة</td></tr>';
+                    refreshMotherDuePanels([], orders);
                     return;
                 }
+
+                const dueRows = buildMotherDueRows(mothers, orders);
+                refreshMotherDuePanels(mothers, orders);
+
                 tbody.innerHTML = '';
                 mothers.forEach(m => {
                     const app = statusMap[m.approval] || { text: m.approval, class: 'badge-pending' };
+                    const dueAmount = dueRows.find(row => Number(row.id) === Number(m.id))?.amountDue || 0;
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>#${m.id}</td>
                         <td><b>${m.name}</b></td>
                         <td>${m.email}</td>
                         <td>${m.phone}</td>
+                        <td><b style="color:#7f1d1d;">${formatCurrency(dueAmount)}</b></td>
                         <td><span class="badge-status ${app.class}">${app.text}</span></td>
                         <td>
                             ${m.approval !== 'APPROVED' ? `<button class="action-btn-sm btn-green-sm" onclick="changeMotherApproval(${m.id}, 'APPROVED')">اعتماد</button>` : ''}
@@ -1381,8 +1850,21 @@
                     `;
                     tbody.appendChild(tr);
                 });
+
+                const searchInput = document.getElementById('motherDueSearchInput');
+                if (searchInput) {
+                    searchInput.oninput = (event) => {
+                        const query = event.target.value || '';
+                        const filteredRows = dueRows.filter(item => {
+                            if (!query.trim()) return true;
+                            const term = `${item.name} ${item.phone}`.toLowerCase();
+                            return term.includes(query.trim().toLowerCase());
+                        });
+                        renderDueList('motherDuesList', filteredRows, query);
+                    };
+                }
             } catch (err) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:#dc2626;">فشل تحميل الأمهات</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#dc2626;">فشل تحميل الأمهات</td></tr>';
             }
         }
 
@@ -1436,18 +1918,35 @@
                 }
                 tbody.innerHTML = '';
                 invs.forEach(inv => {
-                    const statusText = inv.used ? 'مستخدمة' : (inv.valid ? 'صالحة' : 'منتهية');
-                    const badgeClass = inv.used ? 'badge-completed' : (inv.valid ? 'badge-active' : 'badge-rejected');
+                    const used = Boolean(inv.usedAt);
+                    const revoked = Boolean(inv.revokedAt);
+                    const valid = !used && !revoked
+                        && (!inv.expiresAt || new Date(inv.expiresAt).getTime() >= Date.now());
+                    const statusText = used ? 'مستخدمة' : (revoked ? 'ملغاة' : (valid ? 'صالحة' : 'منتهية'));
+                    const badgeClass = used ? 'badge-completed' : (valid ? 'badge-active' : 'badge-rejected');
                     const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>#${inv.id}</td>
-                        <td><b>${inv.target}</b></td>
-                        <td>${inv.expiresAt}</td>
-                        <td><span class="badge-status ${badgeClass}">${statusText}</span></td>
-                        <td>
-                            ${inv.valid && !inv.used ? `<button class="action-btn-sm btn-red-sm" onclick="revokeInvitation(${inv.id})">إلغاء</button>` : '-'}
-                        </td>
-                    `;
+                    [`#${inv.id}`, inv.emailOrPhone, inv.expiresAt].forEach(value => {
+                        const td = document.createElement('td');
+                        td.textContent = value == null ? '' : String(value);
+                        tr.appendChild(td);
+                    });
+                    const statusCell = document.createElement('td');
+                    const badge = document.createElement('span');
+                    badge.className = `badge-status ${badgeClass}`;
+                    badge.textContent = statusText;
+                    statusCell.appendChild(badge);
+                    tr.appendChild(statusCell);
+                    const actionsCell = document.createElement('td');
+                    if (valid) {
+                        const revoke = document.createElement('button');
+                        revoke.className = 'action-btn-sm btn-red-sm';
+                        revoke.textContent = 'إلغاء';
+                        revoke.addEventListener('click', () => revokeInvitation(inv.id));
+                        actionsCell.appendChild(revoke);
+                    } else {
+                        actionsCell.textContent = '-';
+                    }
+                    tr.appendChild(actionsCell);
                     tbody.appendChild(tr);
                 });
             } catch (err) {
@@ -1468,7 +1967,7 @@
             });
             const d = await r.json();
             if (r.ok && d.success) {
-                alertBox.innerHTML = `<div style="background:#dcfce7;color:#166534;padding:14px;border-radius:10px;font-size:13px;">✔ تم إنشاء الدعوة بنجاح! رمز الدعوة: <b>${d.token}</b> (ينتهي في ${d.expiresAt})</div>`;
+                alertBox.innerHTML = `<div style="background:var(--app-rose-soft);color:var(--app-burgundy);padding:14px;border-radius:10px;font-size:13px;">✔ تم إنشاء الدعوة بنجاح! رمز الدعوة: <b>${d.token}</b> (ينتهي في ${d.expiresAt})</div>`;
                 document.getElementById('inviteTargetInput').value = '';
                 loadInvitationsData();
             } else {
@@ -1490,6 +1989,112 @@
             await fetch('/api/logout', { method: 'POST' });
             localStorage.removeItem('user');
             location.href = 'index.html';
+        }
+
+        async function handleGlobalSearch(query) {
+            const dropdown = document.getElementById('searchResultsDropdown');
+            if (query.length < 3) {
+                dropdown.classList.remove('show');
+                dropdown.innerHTML = '';
+                return;
+            }
+            try {
+                const r = await fetch(`/api/admin/users/search?q=${encodeURIComponent(query)}`);
+                if (r.ok) {
+                    const results = await r.json();
+                    if (results.length === 0) {
+                        dropdown.innerHTML = '<div style="padding:12px; font-size:13px; color:#94a3b8; text-align:center;">لا توجد نتائج مطابقة</div>';
+                    } else {
+                        dropdown.innerHTML = results.map(u => `
+                            <div class="search-result-item" onclick="selectSearchResult(${JSON.stringify(u).replace(/"/g, '&quot;')})">
+                                <div class="role-dot dot-${u.role}"></div>
+                                <div class="user-info">
+                                    <span class="user-name">${u.name}</span>
+                                    <span class="user-meta">${u.phone} | ${u.role}</span>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+                    dropdown.classList.add('show');
+                }
+            } catch (e) {
+                console.error("Search error:", e);
+            }
+        }
+
+        function selectSearchResult(user) {
+            showUserDetailModal(user);
+            const dropdown = document.getElementById('searchResultsDropdown');
+            dropdown.classList.remove('show');
+            document.getElementById('globalSearchInput').value = user.name;
+        }
+
+        function showUserDetailModal(user) {
+            const body = document.getElementById('searchModalBody');
+            const roleClass = 'role-' + (user.role || 'CUSTOMER');
+            const roleText = user.role === 'MOTHER' ? 'أم منتجة' : (user.role === 'ADMIN' ? 'مدير نظام' : 'عميل');
+
+            let profileHtml = '';
+            if (user.profile) {
+                const p = user.profile;
+                profileHtml = `
+                    <div class="user-detail-grid" style="margin-top:20px; border-top:1px solid #e2e8f0; padding-top:20px;">
+                        <div class="user-detail-item user-detail-full">
+                            <label>نبذة عن المطبخ</label>
+                            <span>${p.bio || 'لا يوجد وصف'}</span>
+                        </div>
+                        <div class="user-detail-item">
+                            <label>المنطقة</label>
+                            <span>${p.region || '-'}</span>
+                        </div>
+                        <div class="user-detail-item">
+                            <label>حالة الاعتماد</label>
+                            <span>${p.approvalStatus || '-'}</span>
+                        </div>
+                        <div class="user-detail-item user-detail-full">
+                            <label>عنوان الاستلام</label>
+                            <span>${p.pickupAddress || '-'}</span>
+                        </div>
+                        <div class="user-detail-item user-detail-full">
+                            <label>تعليمات الاستلام</label>
+                            <span>${p.instructions || '-'}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            body.innerHTML = `
+                <div style="text-align:center; margin-bottom:20px;">
+                    <span class="user-role-badge ${roleClass}">${roleText}</span>
+                    <h2 style="font-size:22px; font-weight:800; color:#0f172a;">${user.name}</h2>
+                    <p style="color:var(--text-muted); font-size:13px;">معرف المستخدم: #${user.id}</p>
+                </div>
+                <div class="user-detail-grid">
+                    <div class="user-detail-item">
+                        <label>رقم الهاتف</label>
+                        <span>${user.phone}</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <label>البريد الإلكتروني</label>
+                        <span>${user.email}</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <label>العنوان</label>
+                        <span>${user.address || '-'}</span>
+                    </div>
+                    <div class="user-detail-item">
+                        <label>حالة الحساب</label>
+                        <span>${user.status}</span>
+                    </div>
+                </div>
+                ${profileHtml}
+            `;
+            document.getElementById('globalSearchModal').classList.add('show');
+        }
+
+
+        function closeSearchModal(e) {
+            document.getElementById('globalSearchModal').classList.remove('show');
         }
 
         initDashboard();

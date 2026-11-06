@@ -1,19 +1,18 @@
 # 🍲 بيت ماما (Beit Mama)
 
-> نظام إدارة وطلب الأكل البيتي — Java Swing + خادم ويب مدمج + نشر Docker
+> نظام إدارة وطلب الأكل البيتي — Java Swing وخادم API وواجهة ويب وFirestore
 
 ---
 
 ## 📋 نظرة عامة
 
-**بيت ماما** منصة تربط العملاء بالأمهات اللي بيعملوا أكل بيتي. المشروع مكتوب بالكامل بـ **Java** ويشمل:
+**بيت ماما** منصة تربط العملاء بالأمهات اللي بيعملوا أكل بيتي. يتكون من:
 
 | المكوّن | التفاصيل |
 |---|---|
 | **واجهة الإدارة** | Java Swing (تشتغل على سطح المكتب) |
-| **خادم الويب** | HTTP Server مدمج في Java |
-| **قاعدة البيانات** | SQLite (افتراضي) أو MySQL |
-| **النشر** | Docker + Caddy (HTTPS تلقائي) |
+| **الموقع وواجهة API** | Render Free، على رابط واحد |
+| **قاعدة البيانات** | Cloud Firestore (مشروع Firebase) |
 
 ---
 
@@ -22,14 +21,10 @@
 ```text
 beit-mama/
 ├── pom.xml                          # Maven — Java 25، الاعتماديات
-├── Dockerfile                       # بناء صورة Docker للخادم
-├── compose.yaml                     # تشغيل التطبيق + Caddy (HTTPS)
-├── Caddyfile                        # تمرير HTTPS → خادم Java
-├── .env.example                     # قالب متغيرات البيئة
-├── .gitignore                       # يستثني .env وقاعدة البيانات وملف JKS
-├── db/
-│   ├── beit_mama.db                 # قاعدة SQLite (مستثناة من Git)
-│   └── schema.sql                   # مخطط MySQL
+├── render.yaml                     # إعداد نشر الموقع وAPI على Render Free
+├── Dockerfile                      # بناء وتشغيل Java والواجهة معاً
+├── firestore.rules                 # منع الوصول المباشر من المتصفح إلى Firestore
+├── .gitignore
 ├── src/com/beitmama/
 │   ├── Main.java                    # نقطة الدخول: DB + Server + Swing
 │   ├── model/                       # User, Product, Order, Review, Invitation…
@@ -38,7 +33,7 @@ beit-mama/
 │   ├── ui/                          # LoginFrame, AdminDashboardFrame, SwingLauncher
 │   ├── server/                      # BeitMamaWebServer (HTTP + REST API)
 │   └── util/                        # SecurityUtil (تشفير كلمات المرور)
-├── web/                             # صفحات HTML/CSS/JS يقدمها الخادم
+├── web/                             # صفحات HTML/CSS/JS الثابتة
 │   ├── index.html                   # المتجر — الصفحة الرئيسية
 │   ├── login.html                   # تسجيل الدخول وإنشاء الحساب
 │   ├── join.html                    # تسجيل الأم (بدعوة)
@@ -66,6 +61,8 @@ beit-mama/
 |---|---|
 | **Java JDK** | 25 أو أحدث ([Oracle JDK](https://www.oracle.com/java/technologies/downloads/) / [Temurin](https://adoptium.net/)) |
 | **Maven** | 3.9+ (أو استخدم Maven Wrapper لو موجود) |
+| **Firebase CLI وGoogle Cloud CLI** | غير مطلوبين لنشر Render |
+| **Google Cloud credentials** | مطلوبة في Render كملف سري للوصول إلى Firestore |
 
 تحقق من التثبيت:
 ```bash
@@ -85,20 +82,20 @@ mvn compile
 
 ### 2. تشغيل التطبيق
 ```bash
+export FIREBASE_PROJECT_ID="your-firebase-project-id"
+export GOOGLE_APPLICATION_CREDENTIALS="/absolute/path/to/service-account.json"
 mvn exec:java -Dexec.mainClass=com.beitmama.Main
 ```
 
-عند التشغيل سيفتح التطبيق:
-- **نافذة Java Swing** لتسجيل دخول المدير
-- **خادم الويب** على: 👉 `http://localhost:8080/`
+يبدأ خادم Java المحلي على `http://localhost:8080/`، ويحتاج بيانات اعتماد Firestore.
 
-**بيانات الدخول المحلية الافتراضية:**
+**بيانات المدير الافتراضية للتطوير فقط عند إنشاء قاعدة بيانات جديدة:**
 | الحقل | القيمة |
 |---|---|
 | البريد | `admin@beitmama.com` |
 | كلمة المرور | `admin123` |
 
-> ⚠️ **تحذير:** لا تستخدم كلمة المرور الافتراضية على خادم عام — غيّرها في `.env` عند النشر.
+لا تستخدم كلمة المرور الافتراضية في الإنتاج. استخدم `BEITMAMA_ADMIN_PASSWORD` بطول 16 حرفاً على الأقل.
 
 ### تغيير المنفذ (اختياري)
 ```bash
@@ -113,118 +110,27 @@ mvn package
 
 ---
 
-## 🐳 النشر على خادم Linux (Docker + HTTPS مجاني)
+## 🚀 نشر الموقع الكامل مجاناً على Render مع Firestore
 
-### المتطلبات
-- خادم Linux (مثل [Oracle Cloud Always Free](https://www.oracle.com/cloud/free/)) — ARM أو x86
-- اسم نطاق مجاني من [DuckDNS](https://www.duckdns.org/)
-- Docker و Docker Compose مثبّتان على الخادم
+يستضيف Render الواجهة وخادم Java على رابط واحد؛ بذلك تعمل الجلسات وتسجيل الدخول والطلبات من نفس النطاق. تُخزَّن بيانات التطبيق في Firestore. هذا الإعداد لا يحتاج Google Cloud CLI أو Firebase CLI أو تفعيل فوترة Google Cloud.
 
----
+### 1 — تجهيز Firestore
+1. افتح مشروع Firebase `beitmama` وأنشئ قاعدة Cloud Firestore بوضع Native إن لم تكن موجودة.
+2. من إعدادات مشروع Firebase افتح **Service accounts**، وأنشئ مفتاحاً خاصاً بصيغة JSON. لا تضع المفتاح في المشروع أو GitHub ولا ترسله في المحادثة.
 
-### الخطوة 1 — تجهيز الخادم
+### 2 — نشر الموقع وخادم Java على Render
+1. ارفع ملفات المشروع المطلوبة إلى مستودع GitHub الذي ستربطه بـRender، مع التأكد من عدم رفع مفتاح JSON أو أي كلمة مرور.
+2. سجّل الدخول إلى Render، واختر **New → Blueprint**، ثم اربط مستودع GitHub. سيقرأ Render [render.yaml](./render.yaml) ويبني التطبيق من [Dockerfile](./Dockerfile).
+3. من إعدادات الخدمة في Render، أضف **Secret File** باسم `firebase-service-account.json`، والصق محتوى مفتاح حساب الخدمة. لا ترسل المفتاح لأحد.
+4. أضف متغير `BEITMAMA_ADMIN_PASSWORD` من إعدادات Render بقيمة سرية فريدة لا تقل عن 16 حرفاً.
+5. ابدأ النشر، ثم افتح رابط Render الذي يظهر في لوحة الخدمة. هذا هو رابط الموقع الكامل؛ رابط Firebase Hosting الحالي يستضيف الواجهة الثابتة فقط.
 
-```bash
-# على الخادم
-sudo apt update
-sudo apt install -y docker.io docker-compose-v2
-sudo systemctl enable --now docker
-```
+الإعداد مضبوط على Firebase Project ID باسم `beitmama`. إذا كان معرف مشروعك مختلفاً، غيّر القيمة في [render.yaml](./render.yaml) قبل النشر. تسجيل الدخول باستخدام Google اختياري، ويحتاج ضبط OAuth منفصلاً.
 
-افتح المنافذ في جدار حماية Oracle Cloud:
-- **TCP 22** — SSH
-- **TCP 80** — HTTP (يعيد التوجيه إلى HTTPS)
-- **TCP 443** — HTTPS
-
----
-
-### الخطوة 2 — نقل ملفات المشروع
-
-**من جهازك:**
-```bash
-cd /path/to/beit-mama
-
-tar -czf /tmp/beitmama-deploy.tar.gz \
-  --exclude=./target \
-  --exclude=./bin \
-  --exclude=./lib \
-  --exclude=./db/beit_mama.db \
-  --exclude='*.jks' \
-  --exclude=./.env \
-  --exclude=./android/.gradle \
-  .
-
-scp -i /path/to/ssh-key /tmp/beitmama-deploy.tar.gz ubuntu@SERVER_IP:/home/ubuntu/
-```
-
-**على الخادم:**
-```bash
-mkdir -p ~/beitmama
-tar -xzf ~/beitmama-deploy.tar.gz -C ~/beitmama
-cd ~/beitmama
-```
-
----
-
-### الخطوة 3 — إعداد `.env`
-
-```bash
-cp .env.example .env
-nano .env
-```
-
-املأ القيم التالية:
-
-```env
-BEITMAMA_DOMAIN=your-subdomain.duckdns.org
-BEITMAMA_PUBLIC_URL=https://your-subdomain.duckdns.org
-BEITMAMA_ADMIN_PASSWORD=PasswordQowiStrong16Chars!
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-```
-
-| المتغير | الوصف |
-|---|---|
-| `BEITMAMA_DOMAIN` | اسم DuckDNS الكامل (بدون `https://`) |
-| `BEITMAMA_PUBLIC_URL` | رابط HTTPS الكامل |
-| `BEITMAMA_ADMIN_PASSWORD` | كلمة مرور المدير — لا تقل عن 16 حرفاً |
-| `GOOGLE_CLIENT_ID` | اختياري — لتسجيل الدخول بـ Google |
-| `GOOGLE_CLIENT_SECRET` | اختياري — لتسجيل الدخول بـ Google |
-
----
-
-### الخطوة 4 — التشغيل
-
-```bash
-sudo docker compose up -d --build
-```
-
-**التحقق من الحالة:**
-```bash
-sudo docker compose ps
-sudo docker compose logs -f
-```
-
-بعد دقيقتين تقريباً يفتح Caddy شهادة HTTPS تلقائياً ويصبح الموقع متاحاً على `https://your-subdomain.duckdns.org`.
-
----
-
-### أوامر مفيدة
-
-```bash
-# إيقاف الخدمات
-sudo docker compose down
-
-# إعادة البناء بعد تعديل الكود
-sudo docker compose up -d --build
-
-# عرض اللوج المباشر
-sudo docker compose logs -f beitmama
-
-# النسخ الاحتياطي لقاعدة البيانات
-sudo docker compose exec beitmama cp /data/beit_mama.db /tmp/backup.db
-sudo docker cp beitmama:/tmp/backup.db ./beit_mama_backup.db
-```
+### حدود المجانية
+- Render Free قد يوقف الخدمة بعد فترة من عدم الاستخدام؛ أول زيارة بعدها قد تستغرق وقتاً حتى يبدأ الخادم.
+- رفع الصور والفيديو معطل؛ نظام ملفات Render مؤقت.
+- حصص Render وFirestore محدودة وقد تتغير؛ راجع شروط الخطة وحصص Firebase، ولا يوجد ضمان لاستضافة غير محدودة أو توفر دائم.
 
 ---
 
@@ -256,21 +162,15 @@ sudo docker cp beitmama:/tmp/backup.db ./beit_mama_backup.db
 | **كلمات المرور** | SHA-256 مع Salt عشوائي لكل مستخدم |
 | **رموز الدعوة** | تُخزَّن كـ Hash فقط (SHA-256) — الرمز الأصلي لا يُحفظ |
 | **منع التلاعب بالأسعار** | الأسعار والمجاميع تُحسب في الخادم داخل `OrderDao` |
-| **جلسات الدخول** | Cookie محمية بـ `HttpOnly` و`SameSite` |
+| **جلسات الدخول** | Cookie محمية بـ `HttpOnly`؛ واجهة الموقع وAPI على نفس رابط Render |
 | **دعوات الأمهات** | حماية من الاستخدام المتزامن (Concurrency-safe transactions) |
+| **Firestore** | المتصفح ممنوع من القراءة والكتابة مباشرة؛ الاتصال بقاعدة البيانات من خادم Java فقط |
 
 ---
 
-## 🗄️ قاعدة البيانات
+## 🗄️ قاعدة البيانات والملفات
 
-### SQLite (افتراضي — يعمل بدون إعداد)
-الملف يُنشأ تلقائياً عند أول تشغيل في:
-- **محلياً:** `db/beit_mama.db`
-- **على Docker:** وحدة تخزين دائمة `beit_mama_data:/data/beit_mama.db`
-
-### MySQL (اختياري)
-1. أنشئ قاعدة البيانات باستخدام [`db/schema.sql`](./db/schema.sql)
-2. عدّل إعداد الاتصال في [`src/com/beitmama/dao/DatabaseManager.java`](./src/com/beitmama/dao/DatabaseManager.java)
+يستخدم خادم Java Cloud Firestore للحسابات والملفات الشخصية والتصنيفات والوجبات والطلبات وعناصر الطلب والتقييمات والدعوات. لا توجد عملية استيراد تلقائية لبيانات SQLite السابقة؛ يلزم استيراد منفصل قبل استخدام بيانات قديمة.
 
 ---
 
@@ -278,7 +178,7 @@ sudo docker cp beitmama:/tmp/backup.db ./beit_mama_backup.db
 
 مجلد `android/` يحتوي على ملفات Gradle وصفحات الويب المضمّنة في APK.
 
-> عند تعديل أي صفحة HTML تُستخدم في النسختين، تذكر تحديث النسخة في `android/app/src/main/assets/web/` أيضاً.
+> نشر Render يخص واجهة `web/` وخادم Java. أصول Android منفصلة وتبقى على تكوينها الحالي؛ لا تنسخ تغييرات الويب إليها إلا عند تنفيذ تحديث Android بشكل مستقل.
 
 راجع [`android/GOOGLE_PLAY_GUIDE.md`](./android/GOOGLE_PLAY_GUIDE.md) لإرشادات النشر على Google Play.
 
@@ -286,9 +186,9 @@ sudo docker cp beitmama:/tmp/backup.db ./beit_mama_backup.db
 
 ## ⚠️ ملاحظات مهمة
 
-- **لا ترفع** ملف `.env` أو `db/beit_mama.db` أو ملفات `*.jks` إلى مستودع عام — كلها مستثناة في `.gitignore`
+- **لا ترفع** مفاتيح حساب الخدمة أو أي أسرار إلى مستودع عام
 - **كلمة مرور المدير الافتراضية** (`admin123`) للاستخدام المحلي فقط — غيّرها دائماً في بيئة الإنتاج
-- **الاستضافة المجانية** (Oracle Cloud) تخضع لسياسة المزود وقد تتغير؛ احتفظ بنسخ احتياطية منتظمة
+- **حصص الاستضافة المجانية** محدودة وقد تتغير؛ راجع شروط Render وFirebase الحالية
 - **جلسات الدخول** محفوظة في الذاكرة وتنتهي عند إعادة تشغيل الخادم
 - **استعادة كلمة المرور** عبر البريد/SMS تتطلب إعداد مزود خارجي (غير مضمّن حالياً)
 

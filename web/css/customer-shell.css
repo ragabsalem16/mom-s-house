@@ -1,0 +1,110 @@
+body {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+custom-dock-bottom-bar {
+    display: block;
+}
+
+beit-mama-header {
+    display: block;
+}
+
+@media (max-width: 480px) {
+    body {
+        padding-bottom: calc(96px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+:root.dark {
+    color-scheme: dark;
+    --brand-pink: #B8325D;
+    --brand-pink-dark: #8E2446;
+    --brand-pink-light: #39232B;
+    --brand-rose: #FF7891;
+    --brand-green: #70C27C;
+    --text-main: #F5EEF0;
+    --text-sub: #C0B4BA;
+    --bg-page: #191416;
+    --bg-card: #251D21;
+    --card-border: #44363B;
+    --primary: #FF9AAF;
+    --surface: #251D21;
+    --page: #191416;
+    --muted: #C0B4BA;
+    --border: #44363B;
+}
+
+:root.dark body {
+    background: var(--bg-page);
+    color: var(--text-main);
+}
+
+:root.dark body .box,
+:root.dark body .order-card,
+:root.dark body .empty-orders,
+:root.dark body .notification-card,
+:root.dark body .empty-state,
+:root.dark body .followed-list,
+:root.dark body .notifications-panel,
+:root.dark body .modal-content {
+    background-color: var(--bg-card);
+    border-color: var(--card-border);
+    color: var(--text-main);
+}
+
+:root.dark body label,
+:root.dark body .order-info h4,
+:root.dark body .empty-orders p,
+:root.dark body .notification-copy p {
+    color: var(--text-main);
+}
+
+:root.dark body input:not([type="checkbox"]),
+:root.dark body select,
+:root.dark body textarea {
+    background-color: #211A1E;
+    border-color: #514249;
+    color: var(--text-main);
+    color-scheme: dark;
+}
+
+:root.dark body input::placeholder,
+:root.dark body textarea::placeholder {
+    color: #AA9DA3;
+    opacity: 1;
+}
+
+:root.dark body input[readonly] {
+    background-color: #30272B;
+    color: #C0B4BA;
+}
+
+:root.dark body .tabs,
+:root.dark body .mark-read,
+:root.dark body .followed-mother,
+:root.dark body .notice {
+    background-color: #39232B;
+    border-color: #65404C;
+    color: #FFB5C4;
+}
+
+:root.dark body .links {
+    border-color: var(--card-border);
+}
+
+:root.dark body .notification-card.unread {
+    background: linear-gradient(110deg, #251D21 60%, #39232B);
+    border-color: #754253;
+}
+
+:root.dark body .notification-icon {
+    background: #39232B;
+}
+
+:root.dark body .notification-copy h2,
+:root.dark body .notification-link,
+:root.dark body .empty-state strong,
+:root.dark body .followed-list h2 {
+    color: #FF9AAF;
+}

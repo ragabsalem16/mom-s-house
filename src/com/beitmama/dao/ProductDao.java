@@ -1,144 +1,236 @@
 package com.beitmama.dao;
 
+import com.beitmama.model.Category;
 import com.beitmama.model.Product;
+import com.beitmama.model.SellerProfile;
+import com.beitmama.model.User;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import java.math.BigDecimal;
-import java.sql.*;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ProductDao {
+    private static final Set<String> SALES_STATUSES = Set.of("confirmed", "preparing", "ready", "completed");
+    private final UserDao userDao = new UserDao();
+    private final ReviewDao reviewDao = new ReviewDao();
 
     public List<Product> findAllAvailable() {
-        List<Product> list = new ArrayList<>();
-        String sql = "SELECT p.*, u.name as seller_name, sp.region as seller_region, c.name as category_name " +
-                     "FROM products p " +
-                     "JOIN users u ON p.seller_id = u.id " +
-                     "JOIN seller_profiles sp ON u.id = sp.user_id " +
-                     "JOIN categories c ON p.category_id = c.id " +
-                     "WHERE p.is_available = 1 AND p.quantity_available > 0 AND (p.available_until IS NULL OR p.available_until = '' OR date(p.available_until) >= date('now')) AND sp.approval_status = 'APPROVED' AND u.status = 'ACTIVE' " +
-                     "ORDER BY p.id DESC";
-        try (Connection conn = DatabaseManager.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                list.add(mapProduct(rs));
+        List<Product> result = new ArrayList<>();
+        try {
+            for (QueryDocumentSnapshot snapshot : FirestoreDatabase.list("products")) {
+                Product product = mapProduct(snapshot);
+                if (!product.isAvailable() || product.getQuantityAvailable() < 1
+                        || isExpired(product.getAvailableUntil())) continue;
+                result.add(product);
             }
+            populateDetails(result, true);
+            result.removeIf(product -> product.getSellerName() == null || product.getSellerRegion() == null);
+            result.sort(Comparator.comparingInt(Product::getId).reversed());
+            return result;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw databaseError("تعذر تحميل الوجبات المتاحة", e);
         }
-        return list;
     }
 
     public List<Product> findBySeller(int sellerId) {
-        List<Product> list = new ArrayList<>();
-        String sql = "SELECT p.*, u.name as seller_name, sp.region as seller_region, c.name as category_name " +
-                     "FROM products p " +
-                     "JOIN users u ON p.seller_id = u.id " +
-                     "LEFT JOIN seller_profiles sp ON u.id = sp.user_id " +
-                     "JOIN categories c ON p.category_id = c.id " +
-                     "WHERE p.seller_id = ? ORDER BY p.id DESC";
-        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, sellerId);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    list.add(mapProduct(rs));
-                }
+        List<Product> result = new ArrayList<>();
+        try {
+            for (QueryDocumentSnapshot snapshot : FirestoreDatabase.await(FirestoreDatabase.get()
+                    .collection("products").whereEqualTo("seller_id", sellerId).get()).getDocuments()) {
+                Product product = mapProduct(snapshot);
+                result.add(product);
             }
+            populateDetails(result, false);
+            result.sort(Comparator.comparingInt(Product::getId).reversed());
+            return result;
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw databaseError("تعذر تحميل وجبات الأم", e);
         }
-        return list;
+    }
+
+    public List<Product> findAvailableBySeller(int sellerId) {
+        return findBySeller(sellerId).stream()
+                .filter(product -> product.isAvailable() && product.getQuantityAvailable() > 0
+                        && !isExpired(product.getAvailableUntil()))
+                .sorted(Comparator.comparingInt(Product::getSalesCount).reversed()
+                        .thenComparing(Comparator.comparingInt(Product::getId).reversed()))
+                .toList();
+    }
+
+    public List<Category> findCategories() {
+        List<Category> result = new ArrayList<>();
+        try {
+            for (QueryDocumentSnapshot snapshot : FirestoreDatabase.list("categories")) {
+                result.add(new Category(number(snapshot.get("id")), snapshot.getString("name")));
+            }
+            result.sort(Comparator.comparingInt(Category::getId));
+            return result;
+        } catch (SQLException e) {
+            throw databaseError("تعذر تحميل تصنيفات الوجبات", e);
+        }
     }
 
     public Product findById(int id) {
-        String sql = "SELECT p.*, u.name as seller_name, sp.region as seller_region, c.name as category_name " +
-                     "FROM products p " +
-                     "JOIN users u ON p.seller_id = u.id " +
-                     "LEFT JOIN seller_profiles sp ON u.id = sp.user_id " +
-                     "JOIN categories c ON p.category_id = c.id " +
-                     "WHERE p.id = ?";
-        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapProduct(rs);
-                }
-            }
+        try {
+            DocumentSnapshot snapshot = FirestoreDatabase.read("products", id);
+            if (!snapshot.exists()) return null;
+            Product product = mapProduct(snapshot);
+            populateDetails(List.of(product), false);
+            return product;
         } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public boolean addProduct(Product p) {
-        String sql = "INSERT INTO products (seller_id, category_id, name, description, price, quantity_available, is_available, image_url, available_until) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, p.getSellerId());
-            ps.setInt(2, p.getCategoryId());
-            ps.setString(3, p.getName());
-            ps.setString(4, p.getDescription());
-            ps.setBigDecimal(5, p.getPrice());
-            ps.setInt(6, p.getQuantityAvailable());
-            ps.setInt(7, p.isAvailable() ? 1 : 0);
-            ps.setString(8, p.getImageUrl());
-            ps.setString(9, p.getAvailableUntil());
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw databaseError("تعذر تحميل الوجبة", e);
         }
     }
 
-    public boolean updateProduct(Product p) {
-        String sql = "UPDATE products SET name = ?, description = ?, price = ?, quantity_available = ?, is_available = ?, category_id = ?, image_url = ?, available_until = ? " +
-                     "WHERE id = ? AND seller_id = ?";
-        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, p.getName());
-            ps.setString(2, p.getDescription());
-            ps.setBigDecimal(3, p.getPrice());
-            ps.setInt(4, p.getQuantityAvailable());
-            ps.setInt(5, p.isAvailable() ? 1 : 0);
-            ps.setInt(6, p.getCategoryId());
-            ps.setString(7, p.getImageUrl());
-            ps.setString(8, p.getAvailableUntil());
-            ps.setInt(9, p.getId());
-            ps.setInt(10, p.getSellerId());
-            return ps.executeUpdate() > 0;
+    public boolean addProduct(Product product) {
+        try {
+            int id = FirestoreDatabase.nextId("products");
+            product.setId(id);
+            FirestoreDatabase.await(FirestoreDatabase.document("products", id).set(productData(product)));
+            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw databaseError("تعذر إضافة الوجبة", e);
+        }
+    }
+
+    public boolean updateProduct(Product product) {
+        try {
+            DocumentReference reference = FirestoreDatabase.document("products", product.getId());
+            DocumentSnapshot snapshot = FirestoreDatabase.await(reference.get());
+            if (!snapshot.exists() || number(snapshot.get("seller_id")) != product.getSellerId()) return false;
+            FirestoreDatabase.await(reference.update(productData(product)));
+            return true;
+        } catch (SQLException e) {
+            throw databaseError("تعذر تحديث الوجبة", e);
         }
     }
 
     public boolean deleteProduct(int id, int sellerId) {
-        String sql = "UPDATE products SET is_available = 0, quantity_available = 0 WHERE id = ? AND seller_id = ?";
-        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.setInt(2, sellerId);
-            return ps.executeUpdate() > 0;
+        try {
+            DocumentReference reference = FirestoreDatabase.document("products", id);
+            DocumentSnapshot snapshot = FirestoreDatabase.await(reference.get());
+            if (!snapshot.exists() || number(snapshot.get("seller_id")) != sellerId) return false;
+            if (!FirestoreDatabase.await(FirestoreDatabase.get().collection("order_items")
+                    .whereEqualTo("product_id", id).limit(1).get()).isEmpty()) return false;
+            FirestoreDatabase.await(reference.delete());
+            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw databaseError("تعذر حذف الوجبة", e);
         }
     }
 
-    private Product mapProduct(ResultSet rs) throws SQLException {
-        Product p = new Product();
-        p.setId(rs.getInt("id"));
-        p.setSellerId(rs.getInt("seller_id"));
-        p.setSellerName(rs.getString("seller_name"));
-        p.setSellerRegion(rs.getString("seller_region"));
-        p.setCategoryId(rs.getInt("category_id"));
-        p.setCategoryName(rs.getString("category_name"));
-        p.setName(rs.getString("name"));
-        p.setDescription(rs.getString("description"));
-        p.setPrice(rs.getBigDecimal("price"));
-        p.setQuantityAvailable(rs.getInt("quantity_available"));
-        p.setAvailable(rs.getInt("is_available") == 1);
-        p.setImageUrl(rs.getString("image_url"));
-        p.setAvailableUntil(rs.getString("available_until"));
-        return p;
+    private void populateDetails(List<Product> products, boolean approvedMothersOnly) throws SQLException {
+        Map<Integer, Category> categories = new HashMap<>();
+        for (Category category : findCategories()) categories.put(category.getId(), category);
+        Map<Integer, Integer> salesCounts = salesCounts();
+        Map<Integer, User> sellers = new HashMap<>();
+        Map<Integer, SellerProfile> profiles = new HashMap<>();
+        Map<Integer, ReviewDao.MotherRatingSummary> ratings = new HashMap<>();
+        for (Product product : products) {
+            int sellerId = product.getSellerId();
+            if (!sellers.containsKey(sellerId)) sellers.put(sellerId, userDao.findById(sellerId));
+            if (!profiles.containsKey(sellerId)) {
+                SellerProfile profile = approvedMothersOnly
+                        ? userDao.findApprovedMotherProfile(sellerId) : userDao.getSellerProfile(sellerId);
+                profiles.put(sellerId, profile);
+            }
+            if (!ratings.containsKey(sellerId)) ratings.put(sellerId, reviewDao.motherRatingSummary(sellerId));
+            User seller = sellers.get(sellerId);
+            SellerProfile profile = profiles.get(sellerId);
+            ReviewDao.MotherRatingSummary rating = ratings.get(sellerId);
+            Category category = categories.get(product.getCategoryId());
+            product.setSellerName(seller == null ? null : seller.getName());
+            product.setSellerRegion(profile == null ? null : profile.getRegion());
+            product.setCategoryName(category == null ? null : category.getName());
+            product.setSellerRating(rating.average());
+            product.setSellerRatingCount(rating.ratingCount());
+            product.setSellerLikeCount(rating.likeCount());
+            product.setSalesCount(salesCounts.getOrDefault(product.getId(), 0));
+        }
+    }
+
+    private Map<Integer, Integer> salesCounts() throws SQLException {
+        Map<Integer, String> orderStatuses = new HashMap<>();
+        for (QueryDocumentSnapshot order : FirestoreDatabase.list("orders")) {
+            orderStatuses.put(number(order.get("id")), order.getString("status"));
+        }
+        Map<Integer, Integer> counts = new HashMap<>();
+        for (QueryDocumentSnapshot item : FirestoreDatabase.list("order_items")) {
+            if (!SALES_STATUSES.contains(orderStatuses.get(number(item.get("order_id"))))) continue;
+            counts.merge(number(item.get("product_id")), number(item.get("quantity")), Integer::sum);
+        }
+        return counts;
+    }
+
+    private Map<String, Object> productData(Product product) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("id", product.getId());
+        data.put("seller_id", product.getSellerId());
+        data.put("category_id", product.getCategoryId());
+        data.put("name", product.getName());
+        data.put("description", product.getDescription());
+        data.put("price", product.getPrice() == null ? null : product.getPrice().doubleValue());
+        BigDecimal customerPrice = product.getCustomerPrice() == null
+                ? product.getPrice() : product.getCustomerPrice();
+        data.put("customer_price", customerPrice == null ? null : customerPrice.doubleValue());
+        data.put("quantity_available", product.getQuantityAvailable());
+        data.put("is_available", product.isAvailable());
+        data.put("image_url", product.getImageUrl());
+        data.put("available_until", product.getAvailableUntil());
+        data.put("ingredients", product.getIngredients());
+        data.put("preparation_minutes", product.getPreparationMinutes());
+        data.put("freshly_cooked", product.isFreshlyCooked());
+        return data;
+    }
+
+    private Product mapProduct(DocumentSnapshot snapshot) {
+        Product product = new Product();
+        product.setId(number(snapshot.get("id")));
+        product.setSellerId(number(snapshot.get("seller_id")));
+        product.setCategoryId(number(snapshot.get("category_id")));
+        product.setName(snapshot.getString("name"));
+        product.setDescription(snapshot.getString("description"));
+        product.setPrice(decimal(snapshot.get("price")));
+        product.setCustomerPrice(decimal(snapshot.get("customer_price")));
+        product.setQuantityAvailable(number(snapshot.get("quantity_available")));
+        product.setAvailable(Boolean.TRUE.equals(snapshot.getBoolean("is_available")));
+        product.setImageUrl(snapshot.getString("image_url"));
+        product.setAvailableUntil(snapshot.getString("available_until"));
+        product.setIngredients(snapshot.getString("ingredients"));
+        product.setPreparationMinutes(number(snapshot.get("preparation_minutes")));
+        product.setFreshlyCooked(Boolean.TRUE.equals(snapshot.getBoolean("freshly_cooked")));
+        return product;
+    }
+
+    private boolean isExpired(String availableUntil) {
+        if (availableUntil == null || availableUntil.isBlank()) return false;
+        try {
+            return LocalDate.parse(availableUntil).isBefore(LocalDate.now());
+        } catch (RuntimeException e) {
+            throw new IllegalStateException("تاريخ انتهاء توفر الوجبة غير صالح في Firestore.", e);
+        }
+    }
+
+    private int number(Object value) {
+        return value instanceof Number number ? number.intValue() : 0;
+    }
+
+    private BigDecimal decimal(Object value) {
+        if (value instanceof BigDecimal decimal) return decimal;
+        if (value instanceof Number number) return BigDecimal.valueOf(number.doubleValue());
+        return BigDecimal.ZERO;
+    }
+
+    private IllegalStateException databaseError(String message, Exception cause) {
+        return new IllegalStateException(message, cause);
     }
 }

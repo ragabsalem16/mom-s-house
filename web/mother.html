@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <script src="js/api-client.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ملف الأم | بيت ماما</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/customer-shell.css">
+    <style>
+        :root { --burgundy:#8A0034; --rose:#E63956; --cream:#FAF7F8; --line:#F3E7EB; --muted:#756A6E; }
+        * { box-sizing:border-box; }
+        body { margin:0; background:var(--cream); color:#20181B; font-family:Cairo,sans-serif; }
+        main { width:min(940px,calc(100% - 32px)); margin:28px auto 60px; }
+        .card { padding:clamp(16px,3vw,26px); border:1px solid var(--line); border-radius:22px; background:#fff; box-shadow:0 10px 32px #8a00340d; margin-bottom:18px; }
+        .mother-head { display:flex; align-items:center; gap:24px; flex-wrap:wrap; position: relative; }
+        .avatar-wrap { position: relative; }
+        .avatar { width:120px; height:120px; border-radius:50%; object-fit:cover; background:#fff0f3; border:4px solid #fff; box-shadow: 0 0 0 3px var(--burgundy); }
+        .avatar-placeholder { display:grid;place-items:center;color:var(--burgundy);font-size:48px;font-weight:900; width:120px; height:120px; border-radius:50%; border:4px solid #fff; box-shadow: 0 0 0 3px var(--burgundy); background:#fff0f3; }
+        h1,h2,h3,p { margin-top:0; }
+        h1 { margin-bottom:4px; color:var(--burgundy); font-size:clamp(24px,4vw,34px); font-weight:900; }
+        h2 { color:var(--burgundy); font-size:22px; margin-bottom:14px; display: flex; align-items: center; gap: 10px; }
+        .muted { color:var(--muted); }
+        .follow,.primary { border:0; border-radius:999px; background:linear-gradient(135deg,var(--burgundy),var(--rose)); color:#fff; padding:10px 22px; font:700 15px Cairo,sans-serif; cursor:pointer; transition: 0.3s; }
+        .follow:hover, .primary:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(138,0,52,0.2); }
+        .follow.is-following { background:#fff0f3; color:var(--burgundy); border: 1px solid var(--burgundy); }
+        .rating { color:#b27c35; font-weight:800; letter-spacing:1px; font-size: 18px; }
+        .video-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 10px; }
+        .video-card { position: relative; border-radius: 18px; overflow: hidden; aspect-ratio: 9/16; background: #000; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+        .video-card video { width: 100%; height: 100%; object-fit: cover; }
+        .dish-list { display:flex; flex-direction:column; gap:12px; }
+        .dish { display:flex; align-items:center; gap:14px; border:1px solid var(--line); border-radius:18px; padding:12px; background:#fff; }
+        .dish img { width:100px; height:90px; border-radius:14px; object-fit:cover; background:#fff0f3; }
+        .dish-copy { flex:1; min-width:0; }
+        .dish-copy h3 { margin:0 0 4px; color:var(--burgundy); font-size:17px; }
+        .dish-actions { display:flex; align-items:center; gap:10px; }
+        .heart { border:1px solid var(--line); border-radius:999px; background:#fff; color:var(--rose); padding:7px 12px; font:700 14px Cairo,sans-serif; cursor:pointer; }
+        .heart.liked { background:#fff0f3; color:var(--burgundy); }
+        .review-form { display:grid; gap:10px; }
+        .review-form textarea { width:100%; min-height:92px; border:1px solid var(--line); border-radius:14px; padding:12px; font:14px Cairo,sans-serif; resize:vertical; }
+        .stars { display:flex; gap:4px; direction:ltr; justify-content:flex-end; }
+        .star { border:0; background:none; color:#d5c6ca; font-size:28px; cursor:pointer; padding:0 3px; }
+        .star.active { color:#e7a400; }
+        .review-list { display:grid; gap:10px; }
+        .review { border-bottom:1px solid var(--line); padding:12px 0; }
+        .review:last-child { border-bottom:0; }
+        .review-meta { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+        .error { color:#a61b4b; min-height:22px; }
+        .empty { color:var(--muted); text-align:center; padding:22px; }
+        @media(max-width:540px) { .mother-head { justify-content: center; text-align: center; flex-direction: column; } .dish { align-items:flex-start; } .dish img { width:76px;height:76px; } .dish-actions { flex-direction:column;align-items:flex-end; } }
+    </style>
+    <link rel="stylesheet" href="css/app-polish.css">
+</head>
+<body class="mother-profile-page">
+    <beit-mama-header></beit-mama-header>
+    <main>
+        <section class="card mother-head" id="motherHeader"><div class="empty">جاري تحميل الملف الشخصي...</div></section>
+        <section class="card" id="videoSection" hidden>
+            <h2>عرض المطبخ 🎥</h2>
+            <div class="video-grid" id="motherVideos"></div>
+        </section>
+        <section class="card" id="popularSection" hidden>
+            <h2>أشهر الأكلات</h2>
+            <div class="dish-list" id="popularDishes"></div>
+        </section>
+        <section class="card" id="dishesSection" hidden>
+            <h2>كل الأكلات والتصنيفات</h2>
+            <div id="dishCategories"></div>
+        </section>
+        <section class="card">
+            <h2>أضيفي تقييمك للأم</h2>
+            <form class="review-form" id="reviewForm">
+                <div class="stars" id="ratingPicker" role="radiogroup" aria-label="اختاري التقييم من نجمة إلى خمس نجوم"></div>
+                <textarea id="reviewComment" maxlength="1000" required placeholder="اكتبي تعليقك عن الأم وأكلها..."></textarea>
+                <button class="primary" type="submit">إرسال التقييم</button>
+                <p class="error" id="reviewMessage" aria-live="polite"></p>
+            </form>
+        </section>
+        <section class="card">
+            <h2>أحدث التعليقات</h2>
+            <div class="review-list" id="reviews"><p class="empty">جاري تحميل التعليقات...</p></div>
+        </section>
+    </main>
+    <custom-dock-bottom-bar selected-index="0"></custom-dock-bottom-bar>
+    <script src="js/custom-dock-bottom-bar.js"></script>
+    <script>
+        const motherId = new URLSearchParams(location.search).get('id');
+        let mother;
+        let selectedRating = 5;
+
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, char => ({
+                '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
+            })[char]);
+        }
+
+        function followedMothers() {
+            try {
+                const list = JSON.parse(localStorage.getItem('beitMama_followedMothers') || '[]');
+                return Array.isArray(list) ? list : [];
+            } catch (error) {
+                console.warn('تعذر قراءة قائمة المتابعة.', error);
+                return [];
+            }
+        }
+
+        function saveFollow(name) {
+            const list = followedMothers();
+            const index = list.indexOf(name);
+            if (index >= 0) list.splice(index, 1);
+            else list.push(name);
+            localStorage.setItem('beitMama_followedMothers', JSON.stringify(list));
+            const button = document.getElementById('followMother');
+            const active = list.includes(name);
+            button.classList.toggle('is-following', active);
+            button.textContent = active ? '✓ تتابعينها' : '+ متابعة';
+        }
+
+        function ratingStars(rating) {
+            const filled = Math.round(rating);
+            return `${'★'.repeat(filled)}${'☆'.repeat(5 - filled)}`;
+        }
+
+        function dishCard(product, liked) {
+            const card = document.createElement('article');
+            card.className = 'dish';
+            const image = document.createElement('img');
+            image.src = window.beitMamaResourceUrl(product.imageUrl || 'images/molokhia.jpg');
+            image.alt = product.name;
+            image.loading = 'lazy';
+            const copy = document.createElement('div');
+            copy.className = 'dish-copy';
+            const title = document.createElement('h3');
+            title.textContent = product.name;
+            const description = document.createElement('p');
+            description.className = 'muted';
+            description.textContent = `${product.categoryName || ''} · ${product.price} ج.م${product.salesCount ? ` · ${product.salesCount} طلب` : ''}`;
+            const actions = document.createElement('div');
+            actions.className = 'dish-actions';
+            const heart = document.createElement('button');
+            heart.type = 'button';
+            heart.className = `heart${liked ? ' liked' : ''}`;
+            heart.textContent = liked ? '♥ إعجاب الأم' : '♡ أعجبتني';
+            heart.setAttribute('aria-pressed', String(liked));
+            heart.onclick = () => toggleLike(heart);
+            const order = document.createElement('a');
+            order.className = 'primary';
+            order.href = `index.html?product_id=${encodeURIComponent(product.id)}#foods`;
+            order.textContent = 'اطلبيها';
+            actions.append(heart, order);
+            copy.append(title, description);
+            card.append(image, copy, actions);
+            return card;
+        }
+
+        function renderDishes(products, liked) {
+            const popularSection = document.getElementById('popularSection');
+            const dishesSection = document.getElementById('dishesSection');
+            if (!products.length) {
+                dishesSection.hidden = false;
+                document.getElementById('dishCategories').innerHTML = '<p class="empty">لا توجد أكلات متاحة حالياً.</p>';
+                return;
+            }
+            const popular = [...products].sort((a,b) => (b.salesCount || 0) - (a.salesCount || 0)).slice(0, 3);
+            const popularList = document.getElementById('popularDishes');
+            popular.forEach(product => popularList.append(dishCard(product, liked)));
+            popularSection.hidden = false;
+
+            const categories = new Map();
+            products.forEach(product => {
+                const name = product.categoryName || 'أكلات متنوعة';
+                if (!categories.has(name)) categories.set(name, []);
+                categories.get(name).push(product);
+            });
+            const container = document.getElementById('dishCategories');
+            categories.forEach((items, name) => {
+                const section = document.createElement('section');
+                const heading = document.createElement('h3');
+                heading.textContent = name;
+                const list = document.createElement('div');
+                list.className = 'dish-list';
+                items.forEach(product => list.append(dishCard(product, liked)));
+                section.append(heading, list);
+                container.append(section);
+            });
+            dishesSection.hidden = false;
+        }
+
+        async function renderVideos(sellerId) {
+            const section = document.getElementById('videoSection');
+            const container = document.getElementById('motherVideos');
+            try {
+                const res = await fetch(`/api/mothers/videos?seller_id=${sellerId}`);
+                if (!res.ok) throw new Error('تعذر تحميل الفيديوهات');
+                const videos = await res.json();
+                if (!videos.length) {
+                    section.hidden = true;
+                    return;
+                }
+                container.innerHTML = '';
+                videos.forEach(url => {
+                    const card = document.createElement('div');
+                    card.className = 'video-card';
+                    const video = document.createElement('video');
+                    video.src = window.beitMamaResourceUrl(url);
+                    video.controls = true;
+                    video.loop = true;
+                    video.muted = true;
+                    video.autoplay = true;
+                    card.append(video);
+                    container.append(card);
+                });
+                section.hidden = false;
+            } catch (e) {
+                console.error('Error loading videos:', e);
+                section.hidden = true;
+            }
+        }
+
+        function renderReviews(reviews) {
+            const container = document.getElementById('reviews');
+            container.replaceChildren();
+            if (!reviews.length) {
+                container.innerHTML = '<p class="empty">لا توجد تعليقات بعد. كوني أول من يشارك رأيه.</p>';
+                return;
+            }
+            reviews.slice(0, 5).forEach(item => {
+                const review = document.createElement('article');
+                review.className = 'review';
+                const meta = document.createElement('div');
+                meta.className = 'review-meta';
+                const name = document.createElement('strong');
+                name.textContent = item.customerName || 'عميلة';
+                const score = document.createElement('span');
+                score.className = 'rating';
+                score.textContent = ratingStars(item.rating);
+                const comment = document.createElement('p');
+                comment.textContent = item.comment || '';
+                const date = document.createElement('small');
+                date.className = 'muted';
+                date.textContent = item.createdAt ? new Date(item.createdAt).toLocaleDateString('ar-EG') : '';
+                meta.append(name, score);
+                review.append(meta, comment, date);
+                container.append(review);
+            });
+        }
+
+        function renderProfile(data) {
+            mother = data;
+            const head = document.getElementById('motherHeader');
+            const avatarWrap = document.createElement('div');
+            avatarWrap.className = 'avatar-wrap';
+            const avatar = document.createElement(data.profileImageUrl ? 'img' : 'div');
+            avatar.className = `avatar${data.profileImageUrl ? '' : ' avatar-placeholder'}`;
+            if (data.profileImageUrl) {
+                avatar.src = window.beitMamaResourceUrl(data.profileImageUrl);
+                avatar.alt = `صورة ${data.name}`;
+            } else {
+                avatar.textContent = (data.name || 'أ').trim().charAt(0);
+                avatar.setAttribute('aria-label', `صورة ${data.name}`);
+            }
+            avatarWrap.append(avatar);
+            const info = document.createElement('div');
+            info.style.flex = '1';
+            const title = document.createElement('h1');
+            title.textContent = data.name;
+            const region = document.createElement('p');
+            region.className = 'muted';
+            region.textContent = `👩‍🍳 ${data.name} — ساكنة في ${data.region || 'المنطقة غير محددة'}`;
+            const rating = document.createElement('p');
+            rating.className = 'rating';
+            rating.textContent = `${ratingStars(data.rating)}  ${Number(data.rating || 0).toFixed(1)} (${data.ratingCount || 0} تفاعل وتقييم) · ♥ ${data.heartCount || 0}`;
+            const bio = document.createElement('p');
+            bio.className = 'muted';
+            bio.textContent = data.bio || '';
+            info.append(title, region, rating, bio);
+            const actions = document.createElement('div');
+            actions.style.display = 'grid';
+            actions.style.gap = '8px';
+            const follow = document.createElement('button');
+            follow.id = 'followMother';
+            const active = followedMothers().includes(data.name);
+            follow.className = `follow${active ? ' is-following' : ''}`;
+            follow.textContent = active ? '✓ تتابعينها' : '+ متابعة';
+            follow.onclick = () => saveFollow(data.name);
+            actions.append(follow);
+            if (data.locationUrl) {
+                const map = document.createElement('a');
+                map.className = 'muted';
+                map.href = data.locationUrl;
+                map.target = '_blank';
+                map.rel = 'noopener noreferrer';
+                map.textContent = '📍 الموقع على الخريطة';
+                actions.append(map);
+            }
+            head.replaceChildren(avatarWrap, info, actions);
+            renderVideos(data.id);
+            renderDishes(data.products || [], data.liked);
+            renderReviews(data.reviews || []);
+        }
+
+        async function loadProfile() {
+            if (!motherId || !/^\d+$/.test(motherId)) {
+                document.getElementById('motherHeader').textContent = 'رابط ملف الأم غير صالح.';
+                return;
+            }
+            try {
+                const response = await fetch(`/api/mothers/${motherId}`);
+                if (!response.ok) throw new Error('تعذر العثور على ملف الأم');
+                renderProfile(await response.json());
+            } catch (error) {
+                document.getElementById('motherHeader').textContent = error.message;
+            }
+        }
+
+        async function toggleLike(button) {
+            try {
+                const response = await fetch('/api/mothers/like', {
+                    method: 'POST',
+                    body: new URLSearchParams({ seller_id: motherId })
+                });
+                if (response.status === 401) {
+                    location.href = 'login.html';
+                    return;
+                }
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'تعذر تسجيل الإعجاب');
+                const state = result.data;
+                mother.liked = state.liked;
+                mother.rating = state.rating;
+                mother.ratingCount = state.ratingCount;
+                mother.heartCount = state.heartCount;
+                document.querySelectorAll('.heart').forEach(heart => {
+                    heart.classList.toggle('liked', state.liked);
+                    heart.setAttribute('aria-pressed', String(state.liked));
+                    heart.textContent = state.liked ? '♥ إعجاب الأم' : '♡ أعجبتني';
+                });
+                const rating = document.querySelector('.mother-head .rating');
+                rating.textContent = `${ratingStars(state.rating)}  ${Number(state.rating || 0).toFixed(1)} (${state.ratingCount} تفاعل وتقييم) · ♥ ${state.heartCount}`;
+            } catch (error) {
+                document.getElementById('reviewMessage').textContent = error.message;
+            }
+        }
+
+        document.getElementById('ratingPicker').replaceChildren(...Array.from({ length: 5 }, (_, index) => {
+            const value = index + 1;
+            const star = document.createElement('button');
+            star.type = 'button';
+            star.className = `star${value <= selectedRating ? ' active' : ''}`;
+            star.textContent = '★';
+            star.setAttribute('role', 'radio');
+            star.setAttribute('aria-checked', String(value === selectedRating));
+            star.setAttribute('aria-label', `${value} من 5`);
+            star.onclick = () => {
+                selectedRating = value;
+                document.querySelectorAll('.star').forEach((item, i) => {
+                    item.classList.toggle('active', i < value);
+                    item.setAttribute('aria-checked', String(i + 1 === value));
+                });
+            };
+            return star;
+        }));
+
+        document.getElementById('reviewForm').addEventListener('submit', async event => {
+            event.preventDefault();
+            const message = document.getElementById('reviewMessage');
+            message.textContent = '';
+            try {
+                const response = await fetch('/api/mothers/reviews', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        seller_id: motherId,
+                        rating: String(selectedRating),
+                        comment: document.getElementById('reviewComment').value.trim()
+                    })
+                });
+                if (response.status === 401) {
+                    location.href = 'login.html';
+                    return;
+                }
+                const result = await response.json();
+                if (!response.ok || !result.success) throw new Error(result.message || 'تعذر إرسال التعليق');
+                event.target.reset();
+                await loadProfile();
+                message.textContent = 'شكراً لك، تم نشر تقييمك.';
+            } catch (error) {
+                message.textContent = error.message;
+            }
+        });
+
+        loadProfile();
+    </script>
+</body>
+</html>

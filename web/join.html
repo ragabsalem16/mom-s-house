@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="js/api-client.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>تسجيل انضمام أم طاهية | بيت ماما</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/customer-shell.css">
     <style>
         :root {
-            --brand-pink: #c2185b;
-            --brand-pink-dark: #9c1048;
-            --brand-pink-light: #fce4ec;
-            --brand-green: #2e7d32;
-            --text-main: #212121;
-            --text-sub: #666666;
-            --bg-page: #fbf9f8;
-            --card-border: #f0e6e6;
+            --brand-pink: #8A0034;
+            --brand-pink-dark: #700028;
+            --brand-pink-light: #FFF0F3;
+            --brand-rose: #E63956;
+            --brand-green: #2F9E44;
+            --text-main: #20181B;
+            --text-sub: #756A6E;
+            --bg-page: #FAF7F8;
+            --card-border: #F3E7EB;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
@@ -22,8 +25,9 @@
 
         /* Header */
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #f2eaea;
+            background: rgba(253, 251, 251, 0.94);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--card-border);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -63,16 +67,20 @@
         }
         .nav-links a:hover, .nav-links a.active { color: var(--brand-pink); }
         .login-btn {
-            background: var(--brand-pink);
+            background: linear-gradient(135deg, #8A0034 0%, #A61B4B 50%, #E63956 100%);
             color: #fff;
             padding: 8px 22px;
             border-radius: 999px;
             text-decoration: none;
             font-size: 14.5px;
             font-weight: 700;
+            box-shadow: 0 4px 14px rgba(138, 0, 52, 0.2);
             transition: 0.2s;
         }
-        .login-btn:hover { background: var(--brand-pink-dark); }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(138, 0, 52, 0.3);
+        }
 
         /* Form Card */
         .container {
@@ -82,7 +90,7 @@
             padding: 38px 34px;
             border-radius: 24px;
             border: 1px solid var(--card-border);
-            box-shadow: 0 12px 35px rgba(194, 24, 91, 0.05);
+            box-shadow: 0 12px 35px rgba(138, 0, 52, 0.06);
         }
         .header-title-box {
             text-align: center;
@@ -101,12 +109,12 @@
 
         .alert-box {
             background-color: var(--brand-pink-light);
-            border: 1px solid #f8bbd0;
+            border: 1px solid rgba(230, 57, 86, 0.25);
             padding: 12px 16px;
-            border-radius: 12px;
+            border-radius: 14px;
             margin-bottom: 22px;
             font-size: 13.5px;
-            color: var(--brand-pink-dark);
+            color: var(--brand-pink);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -119,29 +127,29 @@
             font-weight: 700;
             margin-bottom: 6px;
             font-size: 13.5px;
-            color: #333;
+            color: var(--text-main);
         }
         input, textarea {
             width: 100%;
             padding: 12px 14px;
-            border: 1.5px solid #dedede;
-            border-radius: 12px;
+            border: 1.5px solid var(--card-border);
+            border-radius: 14px;
             font-size: 14px;
             font-family: inherit;
-            color: #222;
+            color: var(--text-main);
             background: #fafafa;
             transition: 0.2s;
         }
         input:focus, textarea:focus {
-            border-color: var(--brand-pink);
+            border-color: var(--brand-rose);
             background: #fff;
             outline: none;
-            box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.12);
+            box-shadow: 0 0 0 3px rgba(230, 57, 86, 0.15);
         }
 
         .btn-submit {
             width: 100%;
-            background: var(--brand-pink);
+            background: linear-gradient(135deg, #8A0034 0%, #A61B4B 50%, #E63956 100%);
             color: #fff;
             padding: 13px;
             border: none;
@@ -150,44 +158,23 @@
             font-weight: 800;
             cursor: pointer;
             margin-top: 20px;
-            box-shadow: 0 6px 18px rgba(194, 24, 91, 0.25);
+            box-shadow: 0 6px 20px rgba(138, 0, 52, 0.24);
             transition: all 0.2s;
         }
         .btn-submit:hover {
-            background: var(--brand-pink-dark);
             transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(138, 0, 52, 0.32);
+            filter: brightness(1.06);
         }
         .footer-links { text-align: center; margin-top: 20px; font-size: 14px; }
         .footer-links a { color: var(--brand-pink); text-decoration: none; font-weight: 700; }
         .footer-links a:hover { text-decoration: underline; }
     </style>
+    <link rel="stylesheet" href="css/app-polish.css">
 </head>
 <body>
 
-    <header>
-        <div class="nav-container">
-            <a href="index.html" class="logo-area">
-                <span class="logo-badge">
-                    <svg viewBox="0 0 40 40" fill="none">
-                        <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
-                    </svg>
-                </span>
-                <span class="logo-title">بيت ماما</span>
-            </a>
-
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html">الرئيسية</a></li>
-                    <li><a href="index.html#foods">الطلبات</a></li>
-                    <li><a href="join.html" class="active">تسجيل الأمهات</a></li>
-                    <li><a href="login.html">تسجيل الدخول</a></li>
-                </ul>
-            </nav>
-
-            <a href="login.html" class="login-btn">تسجيل الدخول</a>
-        </div>
-    </header>
+    <beit-mama-header></beit-mama-header>
 
     <div class="container">
         <div class="header-title-box">
@@ -228,6 +215,15 @@
             </div>
 
             <div class="form-group">
+                <label for="locationUrl">موقع المطبخ على خرائط Google: *</label>
+                <input type="url" id="locationUrl" required maxlength="2000"
+                    placeholder="الصقي رابط دبوس موقعك من خرائط Google">
+                <button type="button" class="btn-submit" style="margin-top:8px"
+                    onclick="setMotherCurrentLocation()">استخدمي موقعي الحالي</button>
+                <small>يلزم تحديد موقع المطبخ بدقة ليظهر للعملاء الأقرب إليك بعد اعتماد الحساب.</small>
+            </div>
+
+            <div class="form-group">
                 <label>كلمة المرور: *</label>
                 <input type="password" id="password" required placeholder="••••••••">
             </div>
@@ -264,6 +260,22 @@
             }
         };
 
+        function setMotherCurrentLocation() {
+            if (!navigator.geolocation) {
+                alert('تحديد الموقع غير مدعوم في هذا المتصفح.');
+                return;
+            }
+            navigator.geolocation.getCurrentPosition(position => {
+                const { latitude, longitude } = position.coords;
+                document.getElementById('locationUrl').value =
+                    `https://www.google.com/maps?q=${latitude},${longitude}`;
+            }, error => {
+                alert(error.code === error.PERMISSION_DENIED
+                    ? 'اسمحي للمتصفح بالوصول إلى موقعك أو الصقي رابط الموقع يدوياً.'
+                    : 'تعذر تحديد موقعك. حاولي مرة أخرى أو الصقي رابط الموقع يدوياً.');
+            }, { enableHighAccuracy: true, timeout: 15000 });
+        }
+
         async function handleMotherRegister(e) {
             e.preventDefault();
             const payload = {
@@ -275,6 +287,7 @@
                 password: document.getElementById('password').value,
                 pickup_address: document.getElementById('address').value.trim(),
                 pickup_instructions: document.getElementById('instructions').value.trim(),
+                location_url: document.getElementById('locationUrl').value.trim(),
                 bio: document.getElementById('bio').value.trim()
             };
 
@@ -296,5 +309,7 @@
             }
         }
     </script>
+    <custom-dock-bottom-bar selected-index="3"></custom-dock-bottom-bar>
+    <script src="js/custom-dock-bottom-bar.js"></script>
 </body>
 </html>

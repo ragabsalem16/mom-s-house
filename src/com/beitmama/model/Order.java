@@ -18,6 +18,7 @@ public class Order {
     private BigDecimal totalAmount;
     private String paymentMethod; 
     private String pickupTime;
+    private String proposedDeliveryTime;
     private String deliveryMethod;
     private String deliveryAddress;
     private Timestamp createdAt;
@@ -60,6 +61,9 @@ public class Order {
 
     public String getPickupTime() { return pickupTime; }
     public void setPickupTime(String pickupTime) { this.pickupTime = pickupTime; }
+
+    public String getProposedDeliveryTime() { return proposedDeliveryTime; }
+    public void setProposedDeliveryTime(String proposedDeliveryTime) { this.proposedDeliveryTime = proposedDeliveryTime; }
 
     public String getDeliveryMethod() { return deliveryMethod; }
     public void setDeliveryMethod(String deliveryMethod) { this.deliveryMethod = deliveryMethod; }

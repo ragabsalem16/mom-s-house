@@ -11,6 +11,7 @@
     }
     
     document.addEventListener('DOMContentLoaded', function () {
+        if (document.querySelector('.admin-theme-toggle')) return;
         var navbar = document.querySelector('.navbar, .nav-container');
         if (!navbar) return;
         var btn = document.createElement('button');

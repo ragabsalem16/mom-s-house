@@ -11,12 +11,11 @@ WORKDIR /app
 COPY --from=build /workspace/target/beit-mama-1.0.0.jar /app/app.jar
 COPY --from=build /workspace/target/dependency/ /app/dependency/
 COPY web/ /app/web/
-RUN mkdir -p /data && chown -R 10001:0 /app /data
+RUN chown -R 10001:1000 /app
 
 ENV BEITMAMA_HEADLESS=true
 ENV BEITMAMA_PRODUCTION=true
-ENV BEITMAMA_SQLITE_PATH=/data/beit_mama.db
 
-USER 10001:0
+USER 10001:1000
 EXPOSE 8080
 ENTRYPOINT ["sh", "-c", "exec java -Dbeitmama.port=${PORT:-8080} -cp '/app/app.jar:/app/dependency/*' com.beitmama.Main"]

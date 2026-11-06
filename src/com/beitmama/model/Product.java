@@ -12,10 +12,18 @@ public class Product {
     private String name;
     private String description;
     private BigDecimal price;
+    private BigDecimal customerPrice;
     private int quantityAvailable;
     private boolean isAvailable;
     private String imageUrl;
     private String availableUntil;
+    private String ingredients;
+    private int preparationMinutes;
+    private boolean freshlyCooked;
+    private int salesCount;
+    private double sellerRating;
+    private int sellerRatingCount;
+    private int sellerLikeCount;
 
     public Product() {}
 
@@ -46,6 +54,9 @@ public class Product {
     public BigDecimal getPrice() { return price; }
     public void setPrice(BigDecimal price) { this.price = price; }
 
+    public BigDecimal getCustomerPrice() { return customerPrice; }
+    public void setCustomerPrice(BigDecimal customerPrice) { this.customerPrice = customerPrice; }
+
     public int getQuantityAvailable() { return quantityAvailable; }
     public void setQuantityAvailable(int quantityAvailable) { this.quantityAvailable = quantityAvailable; }
 
@@ -57,4 +68,23 @@ public class Product {
 
     public String getAvailableUntil() { return availableUntil; }
     public void setAvailableUntil(String availableUntil) { this.availableUntil = availableUntil; }
+
+    public String getIngredients() { return ingredients; }
+    public void setIngredients(String ingredients) { this.ingredients = ingredients; }
+
+    public int getPreparationMinutes() { return preparationMinutes; }
+    public void setPreparationMinutes(int preparationMinutes) { this.preparationMinutes = preparationMinutes; }
+
+    public boolean isFreshlyCooked() { return freshlyCooked; }
+    public void setFreshlyCooked(boolean freshlyCooked) { this.freshlyCooked = freshlyCooked; }
+
+    public int getSalesCount() { return salesCount; }
+    public void setSalesCount(int salesCount) { this.salesCount = salesCount; }
+
+    public double getSellerRating() { return sellerRating; }
+    public void setSellerRating(double sellerRating) { this.sellerRating = sellerRating; }
+    public int getSellerRatingCount() { return sellerRatingCount; }
+    public void setSellerRatingCount(int sellerRatingCount) { this.sellerRatingCount = sellerRatingCount; }
+    public int getSellerLikeCount() { return sellerLikeCount; }
+    public void setSellerLikeCount(int sellerLikeCount) { this.sellerLikeCount = sellerLikeCount; }
 }

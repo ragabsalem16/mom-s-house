@@ -14,4 +14,8 @@ data
 db/*.db
 *.jks
 android
+/freellmapi
+/web/uploads
+service-account*.json
+firebase-service-account.json
 *.log

@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <script src="js/api-client.js"></script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>بيانات حسابي | بيت ماما</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/home-reference.css">
     <style>
         :root {
-            --brand-pink: #c2185b;
-            --brand-pink-dark: #9c1048;
-            --brand-pink-light: #fce4ec;
-            --brand-green: #2e7d32;
-            --text-main: #212121;
-            --text-sub: #666666;
-            --bg-page: #fbf9f8;
-            --card-border: #f0e6e6;
+            --brand-pink: #8A0034;
+            --brand-pink-dark: #700028;
+            --brand-pink-light: #FFF0F3;
+            --brand-rose: #E63956;
+            --brand-green: #2F9E44;
+            --text-main: #20181B;
+            --text-sub: #756A6E;
+            --bg-page: #FAF7F8;
+            --card-border: #F3E7EB;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
         body { background-color: var(--bg-page); color: var(--text-main); min-height: 100vh; line-height: 1.5; }
 
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #f2eaea;
+            background: rgba(253, 251, 251, 0.94);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--card-border);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -48,141 +52,469 @@
             color: var(--brand-pink);
         }
 
-        .box {
-            max-width: 580px;
+        .profile-container {
+            max-width: 600px;
             margin: 40px auto 60px;
-            padding: 36px 32px;
+            padding: 0 20px;
+        }
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .profile-avatar-wrap {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .avatar-upload-button {
+            position: relative;
+            display: block;
+            padding: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            cursor: pointer;
+        }
+        .profile-avatar {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 3px var(--brand-pink);
+            background: var(--brand-pink-light);
+        }
+        .avatar-upload-button:focus-visible { outline: 3px solid var(--brand-rose); outline-offset: 5px; }
+        .avatar-edit-badge {
+            position: absolute;
+            inset-inline-end: 0;
+            bottom: 4px;
+            display: grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            background: var(--brand-pink);
+            color: #fff;
+            font-size: 17px;
+        }
+        .profile-name {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-pink);
+            margin-bottom: 4px;
+        }
+        .profile-role {
+            font-size: 14px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        .settings-card {
             background: #ffffff;
+            padding: 30px;
             border-radius: 24px;
             border: 1px solid var(--card-border);
             box-shadow: 0 12px 35px rgba(194, 24, 91, 0.05);
         }
-        h1 {
+        .profile-summary { display: grid; gap: 12px; margin-bottom: 18px; }
+        .profile-summary-row {
+            padding: 12px 14px;
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            background: #fffafb;
+        }
+        .profile-summary-row dt { color: var(--text-sub); font-size: 12px; font-weight: 700; }
+        .profile-summary-row dd { margin: 3px 0 0; color: var(--text-main); font-weight: 800; overflow-wrap: anywhere; }
+        .edit-profile-btn {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--brand-pink);
+            border-radius: 999px;
+            background: transparent;
             color: var(--brand-pink);
-            font-size: 24px;
-            font-weight: 900;
-            margin-bottom: 8px;
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
         }
-        .sub-desc {
-            color: var(--text-sub);
-            font-size: 14px;
-            margin-bottom: 22px;
+        .edit-profile-btn:hover { background: var(--brand-pink-light); }
+        .settings-card h2 {
+            color: var(--brand-pink);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        label {
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
             display: block;
-            margin: 14px 0 6px;
+            margin-bottom: 8px;
             font-weight: 700;
-            font-size: 13.5px;
+            font-size: 14px;
             color: #333;
         }
-        input, select {
+        .form-group input, .form-group select {
             width: 100%;
-            padding: 11px 14px;
+            padding: 12px 15px;
             border: 1.5px solid #dedede;
-            border-radius: 12px;
+            border-radius: 14px;
             font: inherit;
             background: #fafafa;
             color: #222;
             transition: 0.2s;
         }
-        input:focus, select:focus {
+        .form-group input:focus, .form-group select:focus {
             border-color: var(--brand-pink);
             background: #fff;
             outline: none;
             box-shadow: 0 0 0 3px rgba(194, 24, 91, 0.12);
         }
-        input[readonly] { background: #f0f0f0; color: #777; cursor: not-allowed; }
-        button {
+        .address-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+        .save-btn {
             width: 100%;
-            margin-top: 24px;
-            padding: 12px;
+            margin-top: 10px;
+            padding: 14px;
             background: var(--brand-pink);
             color: #fff;
             border: 0;
             border-radius: 999px;
             font: inherit;
             font-weight: 800;
-            font-size: 15px;
+            font-size: 16px;
             cursor: pointer;
             box-shadow: 0 6px 18px rgba(194, 24, 91, 0.25);
             transition: 0.2s;
         }
-        button:hover { background: var(--brand-pink-dark); transform: translateY(-2px); }
-        .message { min-height: 24px; margin-top: 10px; text-align: center; font-weight: 700; font-size: 13px; color: var(--brand-pink); }
-        .links { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 22px; border-top: 1px solid #eee; padding-top: 16px; font-size: 14px; }
-        a { color: var(--brand-pink); text-decoration: none; font-weight: 700; }
-        a:hover { text-decoration: underline; }
+        .save-btn:hover { background: var(--brand-pink-dark); transform: translateY(-2px); }
+        .message { min-height: 24px; margin-top: 15px; text-align: center; font-weight: 700; font-size: 14px; color: var(--brand-pink); }
+
+        .followed-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+        }
+        .followed-section h2 {
+            color: var(--brand-pink);
+            font-size: 19px;
+            margin-bottom: 15px;
+        }
+        .followed-grid { display: grid; gap: 12px; }
+        .followed-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            background: #fff;
+            transition: 0.2s;
+        }
+        .followed-card:hover { background: #fffcfd; border-color: var(--brand-pink); }
+        .followed-avatar {
+            width: 48px; height: 48px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--brand-pink-light);
+            display: grid;
+            place-items: center;
+            color: var(--brand-pink);
+            font-weight: 800;
+        }
+        .followed-card a { flex: 1; text-decoration: none; color: inherit; font-weight: 700; }
+        .followed-card button {
+            width: auto; margin: 0; padding: 6px 12px;
+            background: #fff0f3; color: var(--brand-pink);
+            border: 0; border-radius: 999px; font-size: 12px;
+            font-weight: 700; cursor: pointer;
+        }
+        .followed-empty { color: var(--text-sub); text-align: center; padding: 20px; }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        .footer-links a { color: var(--brand-pink); text-decoration: none; font-weight: 700; }
+        .logout-link { color: var(--brand-pink); text-decoration: none; font-weight: 700; cursor: pointer; background: none; border: 0; }
+
+        @media (max-width: 520px) {
+            .address-grid { grid-template-columns: 1fr; }
+            .profile-container { margin: 20px auto 40px; }
+        }
+        [hidden] { display: none !important; }
     </style>
+    <link rel="stylesheet" href="css/customer-shell.css">
+    <link rel="stylesheet" href="css/app-polish.css">
 </head>
 <body>
-<header>
-    <div class="nav-container">
-        <a href="index.html" class="logo-area">
-            <span class="logo-badge">
-                <svg viewBox="0 0 40 40" fill="none">
-                    <path d="M20 4L4 16V34C4 35.1 4.9 36 6 36H34C35.1 36 36 35.1 36 34V16L20 4Z" stroke="#c2185b" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M20 23C20 23 15 19 15 16C15 14 17 12 20 15C23 12 25 14 25 16C25 19 20 23 20 23Z" fill="#c2185b"/>
-                </svg>
-            </span>
-            <span class="logo-title">بيت ماما</span>
-        </a>
-        <a href="index.html" style="color:var(--brand-pink); font-weight:700; text-decoration:none;">← العودة للرئيسية</a>
+<beit-mama-header></beit-mama-header>
+<main class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar-wrap">
+            <img id="userAvatar" src="images/default-user.jpg" alt="صورة المستخدم" class="profile-avatar">
+        </div>
+        <h1 id="displayUserName">جاري التحميل...</h1>
+        <p class="profile-role">حساب عميل متميز · رفع الصور غير متاح في النسخة الحالية</p>
     </div>
-</header>
-<main class="box">
-    <h1>بيانات حسابي</h1>
-    <p class="sub-desc">احفظ بياناتك لتظهر تلقائياً عند تجهيز وطلب أكلاتك البيتية المفضلة.</p>
-    <form id="profileForm">
-        <label for="name">الاسم بالكامل</label>
-        <input id="name" name="name" maxlength="150" required>
-        <label for="email">البريد الإلكتروني</label>
-        <input id="email" name="email" type="email" readonly>
-        <label for="phone">رقم الهاتف</label>
-        <input id="phone" name="phone" type="tel" maxlength="30" required>
-        <label for="address">العنوان الافتراضي للتوصيل والاستلام</label>
-        <input id="address" name="address" maxlength="500" autocomplete="street-address" placeholder="المدينة، الحي، اسم الشارع">
-        <label for="preferredContact">وسيلة التواصل المفضلة</label>
-        <select id="preferredContact" name="preferred_contact">
-            <option value="phone">مكالمة هاتفية</option>
-            <option value="whatsapp">واتساب</option>
-            <option value="sms">رسالة SMS</option>
-        </select>
-        <button type="submit">حفظ التغييرات</button>
-    </form>
-    <div class="message" id="msg"></div>
-    <div class="links">
+
+    <div class="settings-card">
+        <h2>⚙️ إعدادات الحساب الشخصي</h2>
+        <dl class="profile-summary" id="profileSummary" hidden></dl>
+        <button class="edit-profile-btn" id="editProfileButton" type="button" hidden>تعديل البيانات</button>
+        <form id="profileForm">
+            <div class="form-group">
+                <label for="name">الاسم بالكامل</label>
+                <input id="name" name="name" maxlength="150" required>
+            </div>
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input id="email" name="email" type="email" readonly>
+            </div>
+            <div class="form-group">
+                <label for="phone">رقم الهاتف</label>
+                <input id="phone" name="phone" type="tel" maxlength="30" required>
+            </div>
+            <div class="form-group">
+                <label for="alternatePhone">رقم تليفون آخر إضافي للطوارئ أو للتواصل</label>
+                <input id="alternatePhone" name="alternate_phone" type="tel" maxlength="30" autocomplete="tel" required>
+            </div>
+            <fieldset style="border:0; padding:0; margin:0;">
+                <legend style="font-weight:700; font-size:14px; margin-bottom:8px; color:#333;">العنوان بالتفصيل <span aria-hidden="true">*</span></legend>
+                <div class="address-grid">
+                    <div class="form-group">
+                        <label for="city">المدينة</label>
+                        <input id="city" name="city" maxlength="100" autocomplete="address-level2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="street">اسم الشارع</label>
+                        <input id="street" name="street" maxlength="150" autocomplete="street-address" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="building">رقم العمارة</label>
+                        <input id="building" name="building" maxlength="30" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apartment">رقم الشقة</label>
+                        <input id="apartment" name="apartment" maxlength="30" required>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="form-group">
+                <label for="preferredContact">وسيلة التواصل المفضلة</label>
+                <select id="preferredContact" name="preferred_contact">
+                    <option value="phone">مكالمة هاتفية</option>
+                    <option value="whatsapp">واتساب</option>
+                </select>
+            </div>
+            <button type="submit" class="save-btn">حفظ التغييرات</button>
+        </form>
+        <div class="message profile-toast" id="msg" role="status" aria-live="polite"></div>
+    </div>
+
+    <section class="followed-section">
+        <h2>👩‍🍳 الأمهات الذين أتابعهم</h2>
+        <div class="followed-grid" id="followedMothers"><p class="followed-empty">جاري تحميل قائمة المتابعة...</p></div>
+    </section>
+
+    <div class="footer-links">
         <a href="my-orders.html">طلباتي السابقة</a>
         <a href="index.html#foods">تصفح الوجبات</a>
+        <button class="logout-link" onclick="logout()" type="button">تسجيل الخروج</button>
     </div>
 </main>
+
+<custom-dock-bottom-bar selected-index="3"></custom-dock-bottom-bar>
+<script src="js/custom-dock-bottom-bar.js"></script>
 <script>
+    const bottomDock = document.querySelector('custom-dock-bottom-bar');
+    const avatar = document.getElementById('userAvatar');
+
+    document.getElementById('editProfileButton').addEventListener('click', () => {
+        document.getElementById('profileSummary').hidden = true;
+        document.getElementById('editProfileButton').hidden = true;
+        document.getElementById('profileForm').hidden = false;
+        document.getElementById('name').focus();
+    });
+
+    function renderProfileSummary() {
+        const summary = document.getElementById('profileSummary');
+        const rows = [
+            ['الاسم بالكامل', document.getElementById('name').value],
+            ['رقم الهاتف', document.getElementById('phone').value],
+            ['رقم تليفون الطوارئ', document.getElementById('alternatePhone').value],
+            ['العنوان', `المدينة: ${document.getElementById('city').value}، الشارع: ${document.getElementById('street').value}، العمارة: ${document.getElementById('building').value}، الشقة: ${document.getElementById('apartment').value}`],
+            ['وسيلة التواصل', document.getElementById('preferredContact').selectedOptions[0].textContent]
+        ];
+        summary.replaceChildren();
+        rows.forEach(([label, value]) => {
+            const row = document.createElement('div');
+            row.className = 'profile-summary-row';
+            const term = document.createElement('dt');
+            term.textContent = label;
+            const detail = document.createElement('dd');
+            detail.textContent = value;
+            row.append(term, detail);
+            summary.append(row);
+        });
+    }
+
+    function showProfileToast(text, state) {
+        const msg = document.getElementById('msg');
+        msg.textContent = text;
+        msg.className = 'message profile-toast is-visible ' + state;
+        window.clearTimeout(showProfileToast.timeout);
+        showProfileToast.timeout = window.setTimeout(() => {
+            msg.className = 'message profile-toast';
+        }, 3600);
+    }
+
+    async function logout() {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+        } catch (error) {
+            console.warn('تعذر إنهاء جلسة الحساب على الخادم.', error);
+        }
+        location.href = 'login.html';
+    }
+
+    function loadAddressFields(address) {
+        const detailedAddress = /^المدينة: (.*)، الشارع: (.*)، رقم العمارة: (.*)، الشقة: (.*)$/.exec(address || '');
+        if (detailedAddress) {
+            document.getElementById('city').value = detailedAddress[1];
+            document.getElementById('street').value = detailedAddress[2];
+            document.getElementById('building').value = detailedAddress[3];
+            document.getElementById('apartment').value = detailedAddress[4];
+        } else {
+            document.getElementById('city').value = address || '';
+        }
+    }
+
+    function currentFollowedMothers() {
+        try {
+            const list = JSON.parse(localStorage.getItem('beitMama_followedMothers') || '[]');
+            return Array.isArray(list) ? list : [];
+        } catch (error) {
+            console.warn('تعذر قراءة الأمهات المتابَعة.', error);
+            return [];
+        }
+    }
+
+    async function renderFollowedMothers() {
+        const container = document.getElementById('followedMothers');
+        const followed = currentFollowedMothers();
+        container.replaceChildren();
+        if (!followed.length) {
+            const empty = document.createElement('p');
+            empty.className = 'followed-empty';
+            empty.textContent = 'لم تتابعي أي أم بعد. اكتشفي الأمهات من المتجر.';
+            container.append(empty);
+            return;
+        }
+        const results = await Promise.all(followed.map(async name => {
+            const response = await fetch(`/api/mothers/search?q=${encodeURIComponent(name)}`);
+            if (!response.ok) throw new Error('تعذر تحميل قائمة الأمهات المتابَعة');
+            const mothers = await response.json();
+            return mothers.find(mother => mother.name === name) || { name };
+        }));
+        results.forEach(mother => {
+            const card = document.createElement('div');
+            card.className = 'followed-card';
+            if (mother.profileImageUrl) {
+                const image = document.createElement('img');
+                image.src = window.beitMamaResourceUrl(mother.profileImageUrl);
+                image.alt = '';
+                image.className = 'followed-avatar';
+                card.append(image);
+            } else {
+                const avatar = document.createElement('span');
+                avatar.className = 'followed-avatar';
+                avatar.textContent = (mother.name || 'أ').trim().charAt(0);
+                card.append(avatar);
+            }
+            const link = document.createElement('a');
+            link.textContent = mother.name;
+            link.href = mother.id ? `mother.html?id=${encodeURIComponent(mother.id)}` : 'index.html';
+            card.append(link);
+            const unfollow = document.createElement('button');
+            unfollow.type = 'button';
+            unfollow.textContent = 'إلغاء المتابعة';
+            unfollow.onclick = () => {
+                const updated = currentFollowedMothers().filter(name => name !== mother.name);
+                localStorage.setItem('beitMama_followedMothers', JSON.stringify(updated));
+                renderFollowedMothers().catch(error => {
+                    showProfileToast(error.message, 'is-error');
+                });
+            };
+            card.append(unfollow);
+            container.append(card);
+        });
+    }
+
     async function loadProfile() {
         try {
             const res = await fetch('/api/me');
             if (!res.ok) { location.href = 'login.html'; return; }
             const data = await res.json();
             const u = data.user;
+            document.getElementById('displayUserName').textContent = u.name || 'مستخدم بيت ماما';
+            if (u.profileImageUrl) avatar.src = window.beitMamaResourceUrl(u.profileImageUrl);
             document.getElementById('name').value = u.name || '';
             document.getElementById('email').value = u.email || '';
             document.getElementById('phone').value = u.phone || '';
-            document.getElementById('address').value = u.address || '';
-            if (u.preferred_contact) document.getElementById('preferredContact').value = u.preferred_contact;
-        } catch (e) {}
+            document.getElementById('alternatePhone').value = u.alternatePhone || '';
+            loadAddressFields(u.address);
+            if (u.preferredContact || u.preferred_contact) {
+                document.getElementById('preferredContact').value = u.preferredContact || u.preferred_contact;
+            }
+        } catch (error) {
+            showProfileToast('تعذر تحميل بيانات الحساب. يرجى إعادة المحاولة.', 'is-error');
+            console.error('تعذر تحميل بيانات حساب العميل.', error);
+        }
     }
     document.getElementById('profileForm').addEventListener('submit', async function(e) {
         e.preventDefault();
-        const msg = document.getElementById('msg');
-        msg.textContent = 'جاري الحفظ...';
-        const payload = new URLSearchParams(new FormData(this));
+        showProfileToast('جاري الحفظ...', 'is-success');
+        const fields = new FormData(this);
+        const payload = new URLSearchParams();
+        ['name', 'phone', 'alternate_phone', 'preferred_contact'].forEach(name => payload.set(name, fields.get(name)));
+        payload.set('address', `المدينة: ${fields.get('city').trim()}، الشارع: ${fields.get('street').trim()}، رقم العمارة: ${fields.get('building').trim()}، الشقة: ${fields.get('apartment').trim()}`);
         try {
             const res = await fetch('/api/profile', { method: 'POST', body: payload });
             const data = await res.json();
-            msg.textContent = data.message || (data.success ? 'تم الحفظ بنجاح!' : 'حدث خطأ');
-        } catch (e) {
-            msg.textContent = 'تعذر الاتصال بالخادم';
+            if (!res.ok || !data.success) {
+                showProfileToast(data.message || 'تعذر حفظ البيانات. تحقق من الحقول وحاول مرة أخرى.', 'is-error');
+                return;
+            }
+            document.getElementById('displayUserName').textContent = document.getElementById('name').value.trim();
+            renderProfileSummary();
+            document.getElementById('profileForm').hidden = true;
+            document.getElementById('profileSummary').hidden = false;
+            document.getElementById('editProfileButton').hidden = false;
+            showProfileToast('تم حفظ بيانات العنوان والتواصل بنجاح.', 'is-success');
+        } catch (error) {
+            showProfileToast('تعذر الاتصال بالخادم', 'is-error');
+            console.error('تعذر حفظ بيانات حساب العميل.', error);
         }
     });
-    window.onload = loadProfile;
+    window.onload = () => {
+        loadProfile();
+        renderFollowedMothers().catch(error => {
+            document.getElementById('followedMothers').textContent = error.message;
+        });
+    };
+    window.addEventListener('storage', renderFollowedMothers);
 </script>
 </body>
 </html>
